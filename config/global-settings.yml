@@ -1,0 +1,29 @@
+# SFDC connection settings
+salesforce:
+
+  # The external instance of SFDC
+  external:
+
+    # Production credentials 
+    production:
+      grant_type: password
+      host: login.salesforce.com
+      instance_url: <%= ENV['SF_PROD_URL'] %>
+      username: <%= ENV['SF_PROD_USER'] %>
+      password: <%= ENV['SF_PROD_PWD'] %>
+      client_id: <%= ENV['SF_PROD_CID'] %>
+      client_secret: <%= ENV['SF_PROD_CLS'] %>
+
+    # Development (sandbox) credentials
+    development:
+      grant_type: password
+      host: test.salesforce.com
+      instance_url: <%= ENV['SF_DEV_URL'] %>
+      username: <%= ENV['SF_DEV_USER'] %>
+      password: <%= ENV['SF_DEV_PWD'] %>
+      client_id: <%= ENV['SF_DEV_CID'] %>
+      client_secret: <%= ENV['SF_DEV_CLS'] %>
+
+logger:
+  filename: ../logs/logfile.log
+  frequency: daily

@@ -1,0 +1,11 @@
+job_path: jobs/equator_messenger
+sftp:
+  username: someusername
+  password: fakepassword
+  home_path: data/equator
+  drop_path: dropbox
+  completed_path: completed
+  error_path: errors
+logger:
+  filename: ../logs/logfile.log
+  frequency: daily
