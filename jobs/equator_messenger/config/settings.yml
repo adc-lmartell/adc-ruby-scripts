@@ -1,14 +1,23 @@
 job_path: jobs/equator_messenger
+
+local:
+  drop_path: data/equator/dropbox
+  template_path: data/equator/templates
+  offer_path: data/equator/offers
+  completed_path: data/equator/completed
+  error_path: data/equator/errors
+
 sftp:
   host: <%= ENV['SFTP_EQ_HOST'] %>
-  port: <%= END['SFTP_EQ_PORT'] %>
-  username: <%= END['SFTP_EQ_USER'] %>
-  password: <%= END['SFTP_EQ_PWD'] %>
+  port: <%= ENV['SFTP_EQ_PORT'] %>
+  username: <%= ENV['SFTP_EQ_USER'] %>
+  password: <%= ENV['SFTP_EQ_PWD'] %>
   drop_path: dropbox
   template_path: templates
   offer_path: offers
   completed_path: completed
   error_path: errors
+
 logger:
   filename: ../logs/logfile.log
   frequency: daily

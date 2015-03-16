@@ -24,6 +24,15 @@ salesforce:
       client_id: <%= ENV['SF_DEV_CID'] %>
       client_secret: <%= ENV['SF_DEV_CLS'] %>
 
+smtp:
+  host: 
+  port:
+  domain:
+  username:
+  password:
+  from_addr:
+  to_addr:
+
 logger:
   filename: ../logs/logfile.log
   frequency: daily

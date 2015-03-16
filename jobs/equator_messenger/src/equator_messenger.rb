@@ -1,6 +1,7 @@
 require "#{ENV['RUNNER_PATH']}/lib/job.rb"
 require 'watir-webdriver'
 require 'watir-webdriver/wait'
+require 'net/sftp'
 require 'csv'
 
 class EquatorMessenger < Job
@@ -11,14 +12,84 @@ class EquatorMessenger < Job
 	end
 
 	def execute!
-		fetch_csv_from_sftp
-		reorganize_rows
-		upload_messages_to_equator
+		@logger.info "Logging into SFTP server"
+		sftp = start_sftp_session(@options['sftp'])
+
+		@logger.info "Cleanup of temporary files if necessary"
+		cleanup_temp_files(sftp)
+
+		@logger.info "Pull files to process from SFTP"
+		pull_files_to_process(sftp, @options['local'], @options['sftp'])
+
+		@logger.info "Processing files locally"
+		process_files(sftp, @options['local'], @options['sftp'])
 
 		@logger.info "Successfully completed"
 	end
 
 	private
+
+	# Process all the files that were pulled down locally
+	def process_files(sftp, local_opts, sftp_opts)
+
+		Dir.entries("#{ENV['RUNNER_PATH']}/#{local_opts['drop_path']}").select {|f| f =~ /^.+\.csv/} do |f|
+
+		end
+	end
+
+
+	# Grab all the temporary (or processing files) from SFTP so they can be processed locally
+	def pull_files_to_process(sftp, local_opts, sftp_opts)
+		sftp.dir.foreach("#{sftp_opts['drop_path']}") do |f|
+			if f.name =~ /^.+\.csv$/ then
+				sftp.download!("#{sftp_opts['drop_path']}/#{f.name}", "#{ENV['RUNNER_PATH']}/#{local_opts['drop_path']}/#{f.name}")
+			end
+		end
+
+		sftp.dir.foreach("#{sftp_opts['offer_path']}") do |f|
+			if f.name =~ /^[^\.].+$/ then 
+				sftp.download!("#{sftp_opts['offer_path']}/#{f.name}", "#{ENV['RUNNER_PATH']}/#{local_opts['offer_path']}/#{f.name}")
+			end
+		end
+
+		sftp.dir.foreach("#{sftp_opts['template_path']}") do |f|
+			if f.name =~ /^[^\.].+$/ then 
+				sftp.download!("#{sftp_opts['template_path']}/#{f.name}", "#{ENV['RUNNER_PATH']}/#{local_opts['template_path']}/#{f.name}")
+			end
+		end
+	end
+
+	# If there was an issue completing the previous run then attempt to move the temp files back to SFTP
+	def cleanup_temp_files(sftp)
+		unless Dir.entries("#{ENV['RUNNER_PATH']}/#{@options['local']['error_path']}").select {|f| f =~ /^.+\.csv$/}.empty?
+			move_files_to_sftp(sftp, "#{ENV['RUNNER_PATH']}/#{@options['local']['error_path']}", "#{@options['sftp']['error_path']}")
+		end
+
+		unless Dir.entries("#{ENV['RUNNER_PATH']}/#{@options['local']['completed_path']}").select {|f| f =~ /^.+\.csv$/}.empty?
+			move_files_to_sftp(sftp, "#{ENV['RUNNER_PATH']}/#{@options['local']['completed_path']}", "#{@options['sftp']['completed_path']}")
+		end
+	end
+
+	# Create a new SFTP session
+	def start_sftp_session(options)
+		Net::SFTP.start(options['host'], options['username'], { :port => (options['port'] || 22), :password => options['password'] });
+	end
+
+	# Move a directory of files from the local system to the SFTP system
+	def move_files_to_sftp(sftp, local_folder, sftp_folder)
+		Dir.entries(local_folder).select {|f| f =~ /^.+\.csv/}.each do |f|
+			begin
+				sftp.upload!("#{local_folder}/#{f}", "#{sftp_folder}/#{f}")
+				File.unlink("#{local_folder}/#{f}")
+			rescue Exception => e
+				@logger.error "Error moving file to SFTP: #{e}"
+			end
+		end
+	end
+
+	def send_email(body)
+
+	end
 
 	def fetch_csv_from_sftp()
 		home_path = "#{ENV['RUNNER_PATH']}/#{@options['sftp']['home_path']}"
