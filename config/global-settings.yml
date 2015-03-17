@@ -25,13 +25,14 @@ salesforce:
       client_secret: <%= ENV['SF_DEV_CLS'] %>
 
 smtp:
-  host: 
-  port:
-  domain:
-  username:
-  password:
-  from_addr:
-  to_addr:
+  host: <%= ENV['ADC_SMTP_HOST'] %>
+  port: <%= ENV['ADC_SMTP_PORT'] %>
+  domain: <%= ENV['ADC_SMTP_DOMAIN'] %>
+  username: <%= ENV['ADC_SMTP_USER'] %>
+  password: <%= ENV['ADC_SMTP_PASS'] %>
+  from_addr: <%= ENV['ADC_SMTP_FROM'] %>
+  to_addr: <%= ENV['ADC_SMTP_TO'] %>
+  cc_list: <%= ENV['ADC_SMTP_CC'] %>
 
 logger:
   filename: ../logs/logfile.log

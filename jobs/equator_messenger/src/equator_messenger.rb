@@ -2,6 +2,7 @@ require "#{ENV['RUNNER_PATH']}/lib/job.rb"
 require 'watir-webdriver'
 require 'watir-webdriver/wait'
 require 'net/sftp'
+require 'ntlm/smtp'
 require 'csv'
 
 class EquatorMessenger < Job
@@ -25,6 +26,7 @@ class EquatorMessenger < Job
 		process_files(sftp, @options['local'], @options['sftp'])
 
 		@logger.info "Successfully completed"
+		# send_mail('EQ Messenger: Successful Run', 'Job ran successfully', @options['smtp'])
 	end
 
 	private
@@ -32,7 +34,7 @@ class EquatorMessenger < Job
 	# Process all the files that were pulled down locally
 	def process_files(sftp, local_opts, sftp_opts)
 
-		Dir.entries("#{ENV['RUNNER_PATH']}/#{local_opts['drop_path']}").select {|f| f =~ /^.+\.csv/} do |f|
+		Dir.entries("#{ENV['RUNNER_PATH']}/#{local_opts['drop_path']}").select {|f| f =~ /^.+\.csv/}.each do |f|
 
 		end
 	end
@@ -87,8 +89,21 @@ class EquatorMessenger < Job
 		end
 	end
 
-	def send_email(body)
+	def send_mail(subject, body, smtp_opts)
+		mail_body = <<-EOS
+		From: #{smtp_opts['from_addr']}
+		To: #{smtp_opts['to_addr']}
+		Cc: #{smtp_opts['cc_list']}
+		Subject: #{subject}
+		Content-Type: text/plain
 
+		#{body}
+		EOS
+
+		smtp = Net::SMTP.new(smtp_opts['host'])
+		smtp.start(smtp_opts['domain'], smtp_opts['username'], smtp_opts['password'], :ntlm) do |smtp|
+		  smtp.send_mail(mail_body, smtp_opts['from_addr'], smtp_opts['to_addr'])
+		end
 	end
 
 	def fetch_csv_from_sftp()
