@@ -10,8 +10,7 @@ login_credentials = {
 messages = []
 index = 0
 
-# CSV.foreach('EventStartReminder-20150406.csv') do |row|
-CSV.foreach('message.csv') do |row|
+CSV.foreach('EventStartReminder-20150406.csv') do |row|
 	unless index == 0
 		messages.push({ 
 			:contact_agent => !row[0].nil?,
