@@ -10,9 +10,17 @@ login_credentials = {
 messages = []
 index = 0
 
-CSV.foreach('messages2.csv') do |row|
+# CSV.foreach('EventStartReminder-20150406.csv') do |row|
+CSV.foreach('message.csv') do |row|
 	unless index == 0
-		messages.push({ :reo_number => row[0], :subject => row[1], :body => row[2] })
+		messages.push({ 
+			:contact_agent => !row[0].nil?,
+			:contact_sr_am => !row[1].nil?,
+			:contact_am => !row[2].nil?,
+			:reo_number => row[3], 
+			:subject => row[4], 
+			:body => row[5]
+		})
 	end
 	index += 1
 end
@@ -40,17 +48,25 @@ unless messages.empty?
 				b.links(:href, '#ui-tabs-2').last.wait_until_present
 				b.links(:href, '#ui-tabs-2').last.click
 
-				b.links(:href, '#ui-tabs-6').last.wait_until_present
-				b.links(:href, '#ui-tabs-6').last.click
+				b.links(:text, 'Add Messages').last.wait_until_present
+				b.links(:text, 'Add Messages').last.click
 
 				b.select_list(:id, 'flag_note_alerts').wait_until_present
-				b.select_list(:id, 'flag_note_alerts').select(Regexp.new("^AGENT"))
-				Watir::Wait.until { b.select_list(:id, 'flag_note_alerts').include?(Regexp.new("^AGENT")) }
 
-				b.select_list(:id, 'flag_note_alerts').select(Regexp.new("^ASSET MANAGER"))
-				Watir::Wait.until { b.select_list(:id, 'flag_note_alerts').include?(Regexp.new("^ASSET MANAGER")) }
+				if message[:contact_agent] then
+					b.select_list(:id, 'flag_note_alerts').select(Regexp.new("^AGENT"))
+					Watir::Wait.until { b.select_list(:id, 'flag_note_alerts').include?(Regexp.new("^AGENT")) }
+				end
 
-				b.select_list(:id, 'flag_note_alerts').select(Regexp.new("^SR ASSET MANAGER"))
+				if message[:contact_am] then
+					b.select_list(:id, 'flag_note_alerts').select(Regexp.new("^ASSET MANAGER"))
+					Watir::Wait.until { b.select_list(:id, 'flag_note_alerts').include?(Regexp.new("^ASSET MANAGER")) }
+				end
+
+				if message[:contact_sr_am] then
+					b.select_list(:id, 'flag_note_alerts').select(Regexp.new("^SR ASSET MANAGER"))
+					Watir::Wait.until { b.select_list(:id, 'flag_note_alerts').include?(Regexp.new("^SR ASSET MANAGER")) }
+				end
 
 				b.text_field(:name, 'title').set message[:subject]
 				b.textarea(:name, 'note').set message[:body]
