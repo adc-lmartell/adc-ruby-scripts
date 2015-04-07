@@ -79,4 +79,5 @@ unless messages.empty?
 			end
 		end
 	end
+	b.close
 end
