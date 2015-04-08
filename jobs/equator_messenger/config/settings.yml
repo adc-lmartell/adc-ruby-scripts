@@ -2,10 +2,10 @@ job_path: jobs/equator_messenger
 
 local:
   drop_path: data/equator/dropbox
+  error_path: data/equator/errors
   template_path: data/equator/templates
   offer_path: data/equator/offers
   completed_path: data/equator/completed
-  error_path: data/equator/errors
 
 sftp:
   host: <%= ENV['SFTP_EQ_HOST'] %>
