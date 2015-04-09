@@ -22,8 +22,8 @@ class EquatorMessenger < Job
 		@logger.info "Logging into SFTP server"
 		sftp = start_sftp_session(@options['sftp'])
 
-		@logger.info "Cleanup of temporary files if necessary"
-		cleanup_temp_files(sftp)
+		@logger.info "Push error/success files to SFTP if failed previously"
+		push_sftp_files(sftp, @options['local'], @options['sftp'])
 
 		@logger.info "Pull files to process from SFTP"
 		pull_files_to_process(sftp, @options['local'], @options['sftp'])
@@ -41,7 +41,10 @@ class EquatorMessenger < Job
 		sftp = start_sftp_session(@options['sftp'])
 
 		@logger.info "Pushing error/success files to SFTP"
-		cleanup_temp_files(sftp)
+		push_sftp_files(sftp, @options['local'], @options['sftp'])
+
+		@logger.info "Removed processed files from SFTP dropbox"
+		cleanup_sftp_files(sftp, @options['sftp'])
 
 		@logger.info "Successfully completed"
 		# send_mail('EQ Messenger: Successful Run', 'Job ran successfully', @options['smtp'])
@@ -55,13 +58,13 @@ class EquatorMessenger < Job
 	end
 
 	# If there was an issue completing the previous run then attempt to move the temp files back to SFTP
-	def cleanup_temp_files(sftp)
+	def push_sftp_files(sftp, local_opts, sftp_opts)
 		unless Dir.entries("#{ENV['RUNNER_PATH']}/#{@options['local']['error_path']}").select {|f| f =~ /^.+\.csv$/}.empty?
-			move_files_to_sftp(sftp, "#{ENV['RUNNER_PATH']}/#{@options['local']['error_path']}", "#{@options['sftp']['error_path']}")
+			move_files_to_sftp(sftp, "#{ENV['RUNNER_PATH']}/#{local_opts['error_path']}", "#{sftp_opts['error_path']}")
 		end
 
 		unless Dir.entries("#{ENV['RUNNER_PATH']}/#{@options['local']['completed_path']}").select {|f| f =~ /^.+\.csv$/}.empty?
-			move_files_to_sftp(sftp, "#{ENV['RUNNER_PATH']}/#{@options['local']['completed_path']}", "#{@options['sftp']['completed_path']}")
+			move_files_to_sftp(sftp, "#{ENV['RUNNER_PATH']}/#{local_opts['completed_path']}", "#{sftp_opts['completed_path']}")
 		end
 	end
 
@@ -138,6 +141,7 @@ class EquatorMessenger < Job
 				@logger.error "Error parsing file #{f}: #{e}"
 				FileUtils.mv("#{ENV['RUNNER_PATH']}/#{local_opts['drop_path']}/#{f}", "#{ENV['RUNNER_PATH']}/#{local_opts['error_path']}/#{f}")
 			end
+			File.unlink("#{ENV['RUNNER_PATH']}/#{local_opts['drop_path']}/#{f}")
 		end
 	end
 
@@ -145,53 +149,57 @@ class EquatorMessenger < Job
 		unless @process_map[:messages].empty?
 			b = Watir::Browser.new
 
-			b.goto @login_credentials[:url]
-			b.text_field(:name, 'enter_username').set @login_credentials[:username]
-			b.text_field(:name, 'enter_password').set @login_credentials[:password]
-			b.button(:name, 'btnLogin').click
-
 			@process_map[:messages].each do |filename, messages|
-				messages.each_with_index do |message, index|
-					begin
-						b.goto "https://vendors.equator.com/index.cfm?event=property.search&clearCookie=true"
-						b.select_list(:name, 'property_SearchType').select "REO Number"
-						b.text_field(:name, 'property_SearchText').set message[:reo_number]
-						b.button(:name, 'btnSearch').click
+				unless messages.empty?
+					b.goto @login_credentials[:url]
 
-						b.links(:href, /property\.viewEvents/).last.click
+					if b.links(:text, 'Search Properties').size == 0
+						b.text_field(:name, 'enter_username').set @login_credentials[:username]
+						b.text_field(:name, 'enter_password').set @login_credentials[:password]
+						b.button(:name, 'btnLogin').click
+					end
 
-						b.links(:href, '#ui-tabs-2').last.wait_until_present
-						b.links(:href, '#ui-tabs-2').last.click
+					messages.each_with_index do |message, index|
+						begin
+							b.goto "https://vendors.equator.com/index.cfm?event=property.search&clearCookie=true"
+							b.select_list(:name, 'property_SearchType').select "REO Number"
+							b.text_field(:name, 'property_SearchText').set message[:reo_number]
+							b.button(:name, 'btnSearch').click
 
-						b.links(:text, 'Add Messages').last.wait_until_present
-						b.links(:text, 'Add Messages').last.click
+							b.links(:href, /property\.viewEvents/).last.click
 
-						b.select_list(:id, 'flag_note_alerts').wait_until_present
+							b.links(:text, 'Add Message').last.wait_until_present
+							b.links(:text, 'Add Message').last.click
 
-						if message[:contact_agent] then
-							b.select_list(:id, 'flag_note_alerts').select(Regexp.new("^AGENT"))
-							Watir::Wait.until { b.select_list(:id, 'flag_note_alerts').include?(Regexp.new("^AGENT")) }
+							b.select_list(:id, 'flag_note_alerts').wait_until_present
+
+							if message[:contact_agent] then
+								b.select_list(:id, 'flag_note_alerts').select(Regexp.new("^AGENT"))
+								Watir::Wait.until { b.select_list(:id, 'flag_note_alerts').include?(Regexp.new("^AGENT")) }
+							end
+
+							if message[:contact_am] then
+								b.select_list(:id, 'flag_note_alerts').select(Regexp.new("^ASSET MANAGER"))
+								Watir::Wait.until { b.select_list(:id, 'flag_note_alerts').include?(Regexp.new("^ASSET MANAGER")) }
+							end
+
+							if message[:contact_sr_am] then
+								b.select_list(:id, 'flag_note_alerts').select(Regexp.new("^SR ASSET MANAGER"))
+								Watir::Wait.until { b.select_list(:id, 'flag_note_alerts').include?(Regexp.new("^SR ASSET MANAGER")) }
+							end
+
+							b.text_field(:name, 'title').set message[:subject]
+							b.textarea(:name, 'note').set message[:body]
+
+							b.button(:name => 'noteSubmit').click
+							b.button(:name => 'noteSubmit').wait_while_present
+
+							@process_map[:csv_list][filename][index+1].push(["Success", ""]).flatten!
+							@logger.info "#{message[:reo_number]},Success"
+						rescue Exception => e
+							@process_map[:csv_list][filename][index+1].push(["Error", e.message]).flatten!
+							@logger.info "#{message[:reo_number]},Error,#{e.message}"
 						end
-
-						if message[:contact_am] then
-							b.select_list(:id, 'flag_note_alerts').select(Regexp.new("^ASSET MANAGER"))
-							Watir::Wait.until { b.select_list(:id, 'flag_note_alerts').include?(Regexp.new("^ASSET MANAGER")) }
-						end
-
-						if message[:contact_sr_am] then
-							b.select_list(:id, 'flag_note_alerts').select(Regexp.new("^SR ASSET MANAGER"))
-							Watir::Wait.until { b.select_list(:id, 'flag_note_alerts').include?(Regexp.new("^SR ASSET MANAGER")) }
-						end
-
-						b.text_field(:name, 'title').set message[:subject]
-						b.textarea(:name, 'note').set message[:body]
-
-						b.button(:name => 'noteSubmit').click
-						b.button(:name => 'noteSubmit').wait_while_present
-
-						@process_map[:csv_list][filename][index+1].push(["Success", ""]).flatten!
-					rescue Exception => e
-						@process_map[:csv_list][filename][index+1].push(["Error", e.message]).flatten!
 					end
 				end
 			end
@@ -202,19 +210,34 @@ class EquatorMessenger < Job
 	def create_output_files(local_opts)
 		unless @process_map[:csv_list].empty?
 			@process_map[:csv_list].each do |filename, rows|
-				unless rows.select { |row| row.last.size == 0 }.empty?
-					CSV.open("#{ENV['RUNNER_PATH']}/#{local_opts['completed_path']}/#{filename}", "wb") do |csv|
-						csv << rows[0]
-						rows.select { |row| row.last != 'Message' && row.last.size == 0 }.each { |row| csv << row }
+				if rows.size > 1 then
+					
+					success_rows = rows.select { |row| row.last != 'Message' && row.last.size == 0 }
+					unless success_rows.empty?
+						CSV.open("#{ENV['RUNNER_PATH']}/#{local_opts['completed_path']}/#{filename}", "wb") do |csv|
+							csv << rows[0]
+							success_rows.each { |row| csv << row }
+						end
 					end
-				end
 
-				unless rows.select { |row| row.last.size != 0 }.empty?
-					CSV.open("#{ENV['RUNNER_PATH']}/#{local_opts['error_path']}/#{filename}", "wb") do |csv|
-						csv << rows[0]
-						rows.select { |row| row.last != 'Message' && row.last.size != 0 }.each { |row| csv << row }
+					error_rows = rows.select { |row| row.last != 'Message' && row.last.size != 0 }
+					unless error_rows.empty?
+						CSV.open("#{ENV['RUNNER_PATH']}/#{local_opts['error_path']}/#{filename}", "wb") do |csv|
+							csv << rows[0]
+							error_rows.each { |row| csv << row }
+						end
 					end
 				end
+			end
+		end
+	end
+
+	def cleanup_sftp_files(sftp, sftp_opts)
+		@process_map[:csv_list].keys.each do |filename|
+			begin
+				sftp.remove!("#{sftp_opts['drop_path']}/#{filename}")
+			rescue Exception => e
+				@logger.warn "SFTP file not in dropbox when removing: #{filename}"
 			end
 		end
 	end
