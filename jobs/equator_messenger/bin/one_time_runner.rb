@@ -10,7 +10,7 @@ login_credentials = {
 messages = []
 index = 0
 
-CSV.foreach('EventStartReminder-20150406.csv') do |row|
+CSV.foreach('test.csv') do |row|
 	unless index == 0
 		messages.push({ 
 			:contact_agent => !row[0].nil?,
@@ -36,7 +36,7 @@ unless messages.empty?
 		csv << ['REO Number', 'Status', 'Message']
 
 		messages.each do |message|
-			begin
+			# begin
 				b.goto "https://vendors.equator.com/index.cfm?event=property.search&clearCookie=true"
 				b.select_list(:name, 'property_SearchType').select "REO Number"
 				b.text_field(:name, 'property_SearchText').set message[:reo_number]
@@ -52,31 +52,35 @@ unless messages.empty?
 
 				b.select_list(:id, 'flag_note_alerts').wait_until_present
 
+				alerts = b.select_list(:id, 'flag_note_alerts')
+				alert_options = alerts.options.map(&:text)
+				puts alert_options
+
 				if message[:contact_agent] then
 					b.select_list(:id, 'flag_note_alerts').select(Regexp.new("^AGENT"))
-					Watir::Wait.until { b.select_list(:id, 'flag_note_alerts').include?(Regexp.new("^AGENT")) }
+					# Watir::Wait.until { b.select_list(:id, 'flag_note_alerts').include?(Regexp.new("^AGENT")) }
 				end
 
 				if message[:contact_am] then
 					b.select_list(:id, 'flag_note_alerts').select(Regexp.new("^ASSET MANAGER"))
-					Watir::Wait.until { b.select_list(:id, 'flag_note_alerts').include?(Regexp.new("^ASSET MANAGER")) }
+					# Watir::Wait.until { b.select_list(:id, 'flag_note_alerts').include?(Regexp.new("^ASSET MANAGER")) }
 				end
 
 				if message[:contact_sr_am] then
 					b.select_list(:id, 'flag_note_alerts').select(Regexp.new("^SR ASSET MANAGER"))
-					Watir::Wait.until { b.select_list(:id, 'flag_note_alerts').include?(Regexp.new("^SR ASSET MANAGER")) }
+					# Watir::Wait.until { b.select_list(:id, 'flag_note_alerts').include?(Regexp.new("^SR ASSET MANAGER")) }
 				end
 
 				b.text_field(:name, 'title').set message[:subject]
 				b.textarea(:name, 'note').set message[:body]
 
-				b.button(:name => 'noteSubmit').click
-				b.button(:name => 'noteSubmit').wait_while_present
+				# b.button(:name => 'noteSubmit').click
+				# b.button(:name => 'noteSubmit').wait_while_present
 
 				csv << [message[:reo_number], 'Success', '']
-			rescue Exception => e
-				csv << [message[:reo_number], 'Error', e.message]
-			end
+			# rescue Exception => e
+			# 	csv << [message[:reo_number], 'Error', e.message]
+			# end
 		end
 	end
 	b.close

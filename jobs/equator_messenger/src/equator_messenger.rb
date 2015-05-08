@@ -175,17 +175,17 @@ class EquatorMessenger < Job
 
 							if message[:contact_agent] then
 								b.select_list(:id, 'flag_note_alerts').select(Regexp.new("^AGENT"))
-								Watir::Wait.until { b.select_list(:id, 'flag_note_alerts').include?(Regexp.new("^AGENT")) }
+								# Watir::Wait.until { b.select_list(:id, 'flag_note_alerts').include?(Regexp.new("^AGENT")) }
 							end
 
 							if message[:contact_am] then
 								b.select_list(:id, 'flag_note_alerts').select(Regexp.new("^ASSET MANAGER"))
-								Watir::Wait.until { b.select_list(:id, 'flag_note_alerts').include?(Regexp.new("^ASSET MANAGER")) }
+								# Watir::Wait.until { b.select_list(:id, 'flag_note_alerts').include?(Regexp.new("^ASSET MANAGER")) }
 							end
 
 							if message[:contact_sr_am] then
 								b.select_list(:id, 'flag_note_alerts').select(Regexp.new("^SR ASSET MANAGER"))
-								Watir::Wait.until { b.select_list(:id, 'flag_note_alerts').include?(Regexp.new("^SR ASSET MANAGER")) }
+								# Watir::Wait.until { b.select_list(:id, 'flag_note_alerts').include?(Regexp.new("^SR ASSET MANAGER")) }
 							end
 
 							b.text_field(:name, 'title').set message[:subject]
@@ -258,4 +258,4 @@ class EquatorMessenger < Job
 		  smtp.send_mail(mail_body, smtp_opts['from_addr'], smtp_opts['to_addr'])
 		end
 	end
-end
+# end
