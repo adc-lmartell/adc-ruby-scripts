@@ -258,4 +258,4 @@ class EquatorMessenger < Job
 		  smtp.send_mail(mail_body, smtp_opts['from_addr'], smtp_opts['to_addr'])
 		end
 	end
-# end
+end
