@@ -1,5 +1,10 @@
 job_path: jobs/equator_messenger
 
+equator:
+  url: <%= ENV['EQ_URL'] %>
+  username: <%= ENV['EQ_USER'] %>
+  password: <%= ENV['EQ_PWD'] %>
+
 local:
   drop_path: data/equator/dropbox
   error_path: data/equator/errors
