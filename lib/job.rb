@@ -50,7 +50,7 @@ class Job
 	def get_restforce_client(credentials, should_authenticate)
 		restforce_client = {}
 
-		restforce_client[:client] = Restforce.new :username => credentials['username'], :password => credentials['password'], :host => credentials['host'], :instance_url => credentials['instance_url'], :client_id => credentials['client_id'], :client_secret => credentials['client_secret'], :grant_type => credentials['grant_type']
+		restforce_client[:client] = Restforce.new :username => credentials['username'], :password => credentials['password'], :security_token => credentials['security_token'], :host => credentials['host'], :instance_url => credentials['instance_url'], :client_id => credentials['client_id'], :client_secret => credentials['client_secret']
 		restforce_client[:response] = restforce_client[:client].authenticate! if should_authenticate
 
 		restforce_client
