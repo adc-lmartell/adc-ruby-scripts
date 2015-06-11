@@ -10,8 +10,8 @@ class EquatorMessenger < Job
 		super(options, logger)
 		@messages = []
 		@login_credentials = {
-			:url => options['equator']['url']
-			:username => options['equator']['username']
+			:url => options['equator']['url'],
+			:username => options['equator']['username'],
 			:password => options['equator']['password']
 		}
 	end
@@ -28,7 +28,7 @@ class EquatorMessenger < Job
 			# Pull the new requests and any old error records for processing
 			eqms = client.query("SELECT Id, Client__c, Loan_Number__c, Subject__c, Body__c, Agent__c, Asset_Manager__c, Sr_Asset_Manager__c, Status__c, Complete_Date__c, Error_Message__c FROM EQ_Message__c WHERE Status__c IN ('Requested', 'Error') ORDER BY CreatedDate DESC LIMIT 10")
 
-			unless eqms.empty?
+			unless eqms.size == 0
 				eqms.each do |eqm|
 					@messages.push({
 						:sf_record => eqm,
