@@ -22,7 +22,7 @@ class EquatorMessenger < Job
 		@logger.info "Logging into Salesforce"
 
 		begin
-			restforce_client = get_restforce_client(@options['salesforce']['external']['development'], true)
+			restforce_client = get_restforce_client(@options['salesforce']['external']['production'], true)
 			client = restforce_client[:client]
 
 			# Pull the new requests and any old error records for processing
@@ -39,6 +39,7 @@ class EquatorMessenger < Job
 						:subject => eqm.Subject__c, 
 						:body => eqm.Body__c
 					})
+					save_sf_record(eqm, "Processing", nil, nil)
 				end
 				upload_messages_to_equator(client)
 			end
