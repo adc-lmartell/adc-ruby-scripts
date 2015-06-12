@@ -39,6 +39,7 @@ class EquatorMessenger < Job
 						:subject => eqm.Subject__c, 
 						:body => eqm.Body__c
 					})
+					save_sf_record(eqm, "Processing", nil, nil)
 				end
 				upload_messages_to_equator(client)
 			end
