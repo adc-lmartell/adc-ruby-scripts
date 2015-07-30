@@ -1,6 +1,5 @@
 # SFDC connection settings
 salesforce:
-
   # The external instance of SFDC
   external:
 
