@@ -2,9 +2,9 @@ require "#{ENV['RUNNER_PATH']}/lib/job.rb"
 require "#{ENV['RUNNER_PATH']}/lib/logger.rb"
 require 'date'
 require 'json'
-# require 'salesforce_bulk_api'
+require 'salesforce_bulk_api'
 
-class OpptyLookup < Job
+class OpptyLookupBulk < Job
 	def initialize(options, logger)
 		super(options, logger)
 	end
@@ -21,18 +21,16 @@ class OpptyLookup < Job
 
 		assets_to_aoas = {}
 		aoas_for_update = []
+		opps_for_insert = []
 
 		#fetch all cwcot aoas within the last 60 days that are missing an Opportunity lookup organize by Asset Id to Aoas
-		aoas = client.query("Select Id, Opportunity__c, Assets__c, Assets__r.Property_Street__c, Assets__r.Property_City__c, Assets__r.Property_State__c, Assets__r.Property_Zip_Postal_Code__c, Assets__r.Occupancy_Status__c, Assets__r.Home_Square_Footage__c, Assets__r.Bedrooms__c, Assets__r.Property_Type__c, Auction_Campaign__c, MLH_Loan_Number__c, MLH_Seller_Code__c, MLH_Pool_Number__c, MLH_Product_Type__c, Seller_Name__c From Auction_Opportunity_Assignment__c Where Calendar_Year(CreatedDate) = 2015 And Line_of_Business__c = 'Residential' And MLH_Seller_Code__c <> 'TST' And Mismatched_Opp__c = true AND (NOT MLH_Property_Address__c LIKE '%TEST%') AND Placeholder_Event__c = false AND Auction_Campaign__c <> null AND MLH_Global_Property_ID__c <> null")		
+		aoas = client.query("Select Id, Opportunity__c, Assets__c, Assets__r.Property_Street__c, Assets__r.Property_City__c, Assets__r.Property_State__c, Assets__r.Property_Zip_Postal_Code__c, Assets__r.Occupancy_Status__c, Assets__r.Home_Square_Footage__c, Assets__r.Bedrooms__c, Assets__r.Property_Type__c, Auction_Campaign__c, MLH_Loan_Number__c, MLH_Seller_Code__c, MLH_Pool_Number__c, MLH_Product_Type__c, Seller_Name__c From Auction_Opportunity_Assignment__c Where Calendar_Year(CreatedDate) = 2015 And Line_of_Business__c = 'Residential' And MLH_Seller_Code__c <> 'TST' And Mismatched_Opp__c = true AND (NOT MLH_Property_Address__c LIKE '%TEST%') AND Placeholder_Event__c = false AND Auction_Campaign__c <> null AND MLH_Global_Property_ID__c <> null LIMIT 2")		
 		aoas.each do |aoa|
 			assets_to_aoas[aoa.Assets__c] = [] if !assets_to_aoas.has_key?(aoa.Assets__c)
 			assets_to_aoas[aoa.Assets__c] << aoa 
-		end
 
-		#instantiate the bulk api client to perform mass updates on Opportunity and AOAs
-		# opps_for_insert = [];
-		# aoas_for_update = [];
-		# salesforce = SalesforceBulkApi::Api.new(client)		
+			puts aoa.Id
+		end		
 
 		assets_to_aoas.keys.each do |asset_id|
 
@@ -53,7 +51,7 @@ class OpptyLookup < Job
 			if parent_opp_Id.length == 0 then
 				aoa = assets_to_aoas[asset_id][0]
 
-				opportunity_fields = {
+				opp = {
 					"Name" => 'Dummy Opp', 
 					"CloseDate" => Date.today.to_s, 
 					"StageName" => 'Stage 4. Pre-Auction', 
@@ -71,20 +69,17 @@ class OpptyLookup < Job
 					"MLH_Seller_Code__c" => aoa.MLH_Seller_Code__c
 				}
 
-				# opps_for_insert.push(opportunity);
-				opportunity_json = JSON.generate(opportunity_fields)
-				parent_opp_Id = client.create('Opportunity', opportunity_json)				
+				opps_for_insert << opp
 			end 
 
-			puts parent_opp_Id
-
-			#set the opportunity lookup on aoa and update
 			if parent_opp_Id.length > 0 then
-				assets_to_aoas[asset_id].each do |aoa|
-					client.update('Auction_Opportunity_Assignment__c', Id: aoa.Id, Opportunity__c: parent_opp_Id)
-				end
-			end			
+				aoa.Opportunity__c = parent_opp_Id;
+
+				aoas_for_update << aoa
+			end		
 		end
+
+		
 
 		# puts opps_for_insert;
 		# result = salesforce.create("Opportunity", opps_for_insert)
