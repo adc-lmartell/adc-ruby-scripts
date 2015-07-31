@@ -13,10 +13,31 @@ class DocUploads < Job
 	def execute!
 
 		@@fldMap = {
-			"Final HUD Packages" => ["Final_HUD_Reviewed_Date__c", "Final_HUD_Upload_Date__c"],
-			"Unexecuted Contracts" => ["Contract_To_Seller__c"],
-			"Executed Contracts" => ["Date_PSA_Fully_Executed__c"],
-			"Property Title Reports" => ["PTR_Upload_Date__c"]
+			"FHW" => {
+				"title" => "Final HUD Packages",
+				"object" => "Offer__c",
+				"fields" => ["Final_HUD_Reviewed_Date__c", "Final_HUD_Upload_Date__c"]
+			},
+			"CTU" => {
+				"title" => "Unexecuted Contracts",
+				"object" => "Offer__c",
+				"fields" => ["Contract_To_Seller__c"]
+			},
+			"CTE" => {
+				"title" => "Executed Contracts",
+				"object" => "Offer__c",
+				"fields" => ["Date_PSA_Fully_Executed__c"]
+			},
+			"EHUD" => {
+				"title" => "Executed Contracts",
+				"object" => "Offer__c",
+				"fields" => [""]
+			},
+			"PTR" => {
+				"title" => "Property Title Reports",
+				"object" => "Auction__c",
+				"fields" => ["PTR_Upload_Date__c"]
+			}
 		}
 
 		@@dml_log = {
@@ -45,14 +66,15 @@ class DocUploads < Job
 				if file.name =~ /^*\.pdf$/ then
 
 			    	filename = File.basename(file.name)
-			    	closing_file = filename[/-(.*?)\.\w+$/,1]
+			    	file_key = filename[/-(.*?)\.\w+$/,1]
 			    	
-			    	if @@fldMap.has_key?(closing_file) then
+			    	if @@fldMap.has_key?(file_key) then
 			    		files << filename
 			    		offer_num = filename[/^(.*?)-/,1]
 			    		offer_nums << offer_num if offer_nums.index(offer_num).nil?			    		
 			    	else
-			    		sftp.rename!("Closing Document Uploads/dropbox/"+file, "Closing Document Uploads/error/"+file)
+			    		@logger.info "ERROR: "+filename+" Incorrect naming convention"	
+			    		sftp.rename!("Closing Document Uploads/dropbox/"+filename, "Closing Document Uploads/error/"+filename)
 						@@dml_log["file"]["failures"] << offer_num
 			    	end
 			    end    	
@@ -69,10 +91,11 @@ class DocUploads < Job
 		    if !files.empty? then
 		    	files.each do |file|		    		
 
-		    		closing_file = file[/-(.*?)\.\w+$/,1]
+		    		file_key = file[/-(.*?)\.\w+$/,1]
 		    		offer_num = file[/^(.*?)-/,1]
 		    		offer_id = offer_ids.has_key?(offer_num) ? offer_ids[offer_num] : ''
-		    		puts offer_id
+		    		file_name = @@fldMap[file_key]["title"]
+
 		    		if offer_id.length > 0
 				    	data = sftp.download!("/Closing Document Uploads/dropbox/"+file)
 
@@ -80,13 +103,13 @@ class DocUploads < Job
 				    	offer = offers_for_update.has_key?(offer_id) ? offers_for_update[offer_id] : { "Id" => offer_id }
 				    	offers_for_update[offer_id] = offer
 
-						@@fldMap[closing_file].each do |fld|
+						@@fldMap[file_key]["fields"].each do |fld|
 							offer[fld] = Date.today
 						end
 
 				    	#create the feed item
 						begin
-							res = @@client.create!("FeedItem", ParentId: offer_id, ContentData: Base64::encode64(data), ContentFileName: closing_file, Body: closing_file, Visibility: 'AllUsers')
+							res = @@client.create!("FeedItem", ParentId: offer_id, ContentData: Base64::encode64(data), ContentFileName: file_name, Body: file_name, Visibility: 'AllUsers')
 							if res.length == 18 then
 								@@dml_log["file"]["successes"] << offer_num
 							end
@@ -100,6 +123,8 @@ class DocUploads < Job
 
 					# move the file to the processed folder
 					sftp.rename!("Closing Document Uploads/dropbox/"+file, "Closing Document Uploads/processed/"+file)
+
+					puts @@dml_log
 				end
 		    end
 
