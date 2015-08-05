@@ -67,6 +67,7 @@ class OpptyLookup < Job
 					"Square_Feet__c" => aoa.Assets__r.Home_Square_Footage__c, 
 					"Bedrooms__c" => aoa.Assets__r.Bedrooms__c, 
 					"Loan_Number__c" => aoa.MLH_Loan_Number__c, 
+					"Auction_Opportunity_Assignment__c" => aoa.Id,
 					"Most_Recent_Auction__c" => aoa.Auction_Campaign__c,
 					"MLH_Seller_Code__c" => aoa.MLH_Seller_Code__c
 				}
