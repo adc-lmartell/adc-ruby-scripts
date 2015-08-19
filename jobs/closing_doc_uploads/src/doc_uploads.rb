@@ -1,191 +1,225 @@
 require "#{ENV['RUNNER_PATH']}/lib/job.rb"
 require "#{ENV['RUNNER_PATH']}/lib/logger.rb"
 require 'net/sftp'
+require 'date'
 require 'base64'
 require 'date'
-require 'net/smtp'
 
 class DocUploads < Job
+
+	CLS_FTP_CONFIG = {
+		"Offer" => {
+			"sobject" => "Offer__c",
+			"files" => {
+				"FHW" => {
+					"title" => "Final HUD Packages",				
+					"fields" => ["Final_HUD_Reviewed_Date__c", "Final_HUD_Upload_Date__c"]
+				},
+				"CTU" => {
+					"title" => "Unexecuted Contracts",
+					"fields" => ["Contract_To_Seller__c"]
+				},
+				"CTE" => {
+					"title" => "Executed Contracts",
+					"fields" => ["Date_PSA_Fully_Executed__c"]
+				}
+			}
+		},
+		"TRL" => {
+			"sobject" => "Title_Research__c",
+			"files" => {
+				"PTR" => {
+					"title" => "Property Title Reports",
+					"fields" => ["PTR_Received_Date__c"]
+				}
+			}
+		},
+		"Auction" => {
+			"sobject" => "Auction__c",
+			"files" => {
+				"PTR" => {
+					"title" => "Property Title Reports",
+					"fields" => ["PTR_Upload_Date__c"]
+				}
+			}
+		}
+	}
+
+	class InvalidFileError < RuntimeError
+	end
+
 	def initialize(options, logger)
-		super(options, logger)
+		super(options, logger)		
 	end
 
 	def execute!
-
-		@@fldMap = {
-			"FHW" => {
-				"title" => "Final HUD Packages",
-				"folder" => "Offer",
-				"fields" => ["Final_HUD_Reviewed_Date__c", "Final_HUD_Upload_Date__c"]
-			},
-			"CTU" => {
-				"title" => "Unexecuted Contracts",
-				"folder" => "Offer",
-				"fields" => ["Contract_To_Seller__c"]
-			},
-			"CTE" => {
-				"title" => "Executed Contracts",
-				"folder" => "Offer",
-				"fields" => ["Date_PSA_Fully_Executed__c"]
-			},
-			"EHUD" => {
-				"title" => "Est. HUD Package",
-				"folder" => "Offer",
-				"fields" => [""]
-			},
-			"PTR" => {
-				"title" => "Property Title Reports",
-				"folder" => "Auction",
-				"fields" => ["PTR_Upload_Date__c"]
-			}
-		}
-
-		@@dml_log = {
-			"auction" => [],
-			"offer" => []
-	    }
-
-	    @@file_log = {
-	    	"processed" => [],
-	    	"failed" => []
-	    }
 		
-		# Restforce.log = true
 		restforce_client = get_restforce_client(@options['salesforce']['external']['development'], true)
-		@@client = restforce_client[:client]
-
+		@restforce = restforce_client[:client]
 		@logger.info "Login successful"		
+		
+		#parse SFTP site and collect a set of objects and documents for updates in each folder
+		@sfdc_object_updates = {}
 
 		Net::SFTP.start(@options['sftp']['closing']['host'], @options['sftp']['closing']['username'], :password => @options['sftp']['closing']['password']) do |sftp|
-			files = []
+			@sftp = sftp
 
-			# iterate through offer dropbox directory
-			sftp.dir.foreach("Offer/dropbox") do |file|
-				if file.name =~ /^*\.pdf$/ then
-
-			    	filename = File.basename(file.name)
-			    	file_key = filename[/-(.*?)\.\w+$/,1]
-			    	record_id = filename[/^(.*?)-/,1]
-
-					@@file_log["processed"] << filename
-
-			    	if @@fldMap.has_key?(file_key) && !record_id.nil? && (record_id.length == 18 || record_id.length == 15) then
-			    		files << filename			    		
-			    	else
-			    		@logger.info "ERROR: "+filename+" Incorrect naming convention"	
-			    		sftp.rename!("Offer/dropbox/"+filename, "Offer/failed/"+filename)
-			    		@@file_log["failed"] << filename
-			    	end
-			    end    	
-		  	end
-
-			# iterate through auction dropbox directory
-			sftp.dir.foreach("Auction/dropbox") do |file|
-				if file.name =~ /^*\.pdf$/ then
-
-			    	filename = File.basename(file.name)
-			    	file_key = filename[/-(.*?)\.\w+$/,1]
-			    	record_id = filename[/^(.*?)-/,1]
-
-			    	@@file_log["processed"] << filename
-
-			    	if @@fldMap.has_key?(file_key) && !record_id.nil? && record_id.length > 0 then
-			    		files << filename			    		
-			    	else
-			    		@logger.info "ERROR: "+filename+" Incorrect naming convention"
-			    		sftp.rename!("Auction/dropbox/"+filename, "Auction/failed/"+filename)
-			    		@@file_log["failed"] << filename
-			    	end
-			    end    	
-		  	end
-
-		  	#map to maintain objects for update in case multiple files exist for the same id
-		  	offers_for_update = {}
-		  	auctions_for_update = {}
-
-		    #post feed items and stamp dates to salesforce
-		    if !files.empty? then
-		    	files.each do |file|
-
-		    		puts file	    		
-
-		    		file_key = file[/-(.*?)\.\w+$/,1]
-		    		record_id = file[/^(.*?)-/,1]
-		    		file_name = @@fldMap[file_key]["title"]
-		    		folder = @@fldMap[file_key]["folder"]
-
-		    		if record_id.length > 0
-				    	data = sftp.download!(folder+"/dropbox/"+file)
-
-				    	#set the date field on the offer instance
-				    	record_for_update = {}
-
-				    	if folder == "Offer" then
-				    		offer = offers_for_update.has_key?(record_id) ? offers_for_update[record_id] : { "Id" => record_id }
-				    		offers_for_update[record_id] = offer
-
-				    		record_for_update = offer
-				    	end
-
-				    	if folder == "Auction" then
-				    		auction = auctions_for_update.has_key?(record_id) ? auctions_for_update[record_id] : { "Id" => record_id }
-				    		auctions_for_update[record_id] = auction
-
-				    		record_for_update = auction
-				    	end
-
-						@@fldMap[file_key]["fields"].each do |fld|
-							record_for_update[fld] = Date.today
-						end
-
-				    	#create the feed item
-						begin
-							res = @@client.create!("FeedItem", ParentId: record_id, ContentData: Base64::encode64(data), ContentFileName: file_name, Body: file_name, Visibility: 'AllUsers')
-
-						rescue => e
-							puts e.inspect
-							sftp.rename!(folder+"/dropbox/"+file, folder+"/failed/"+file)
-
-							@@file_log["failed"] << filename
-						end
-					end					
-
-					# move the file to the processed folder
-					sftp.rename!(folder+"/dropbox/"+file, folder+"/complete/"+file)
-				end
-		    end
-
-		    #update the offer records
-		    if !offers_for_update.empty? then
-			    offers_for_update.keys.each do |record_id|
-					offer = offers_for_update[record_id]
-
+			@sftp.dir.foreach("/") do |dir|
+				if dir.name.match(/\.\w+/).nil? && CLS_FTP_CONFIG.has_key?(dir.name) then
 					begin
-						res = @@client.update!("Offer__c", offer)
-					rescue => e
-						@@dml_log["offer"] << record_id
-						puts e.inspect
+						ftp_dir = Directory.new dir.name
+						ftp_dir.sftp = @sftp
+						ftp_dir.parse!
+
+						@sfdc_object_updates[dir.name] = ftp_dir						
+					rescue Net::SFTP::StatusException => e
+						@logger.info "Invalid Directory "+dir.name
 					end
 				end
 			end
+		
+			#create auction documents and objects for Ohio Wells Fargo properties
+			if @sfdc_object_updates.has_key?("TRL") && !@sfdc_object_updates["TRL"].documents.empty? then
 
-			#update the auction records
-		    if !auctions_for_update.empty? then
-			    auctions_for_update.keys.each do |record_id|
-					auction = auctions_for_update[record_id]
+				tr_ids = @sfdc_object_updates["TRL"].objects.keys				
+				trs_to_auctions = query_auctions_from_tr(tr_ids)				
 
-					begin
-						res = @@client.update!("Auction__c", auction)
-					rescue => e
-						@@dml_log["auction"] << record_id
-						puts e.inspect
+				if !trs_to_auctions.empty? then
+					auc_directory = build_auction_directory(trs_to_auctions)				
+					@sfdc_object_updates["Auction"] = auc_directory
+				end
+			end
+
+			#insert files and update sobjects
+			if !@sfdc_object_updates.empty? then
+				@sfdc_object_updates.keys.each do |folder|
+					directory = @sfdc_object_updates[folder]
+					sobject_type = CLS_FTP_CONFIG[folder]["sobject"]
+					
+					#insert feed items
+					directory.documents.values.each do |documents|						
+						documents.each do |doc|
+							begin								
+								res = @restforce.insert("FeedItem", doc)
+								raise RuntimeError, "Failed to push feed item to SFDC: "+doc["ContentFileName"] if !res
+								@sftp.rename!(folder+"/dropbox/"+doc["ContentFileName"], folder+"/complete/"+doc["ContentFileName"]) if res != "false"
+
+							rescue Net::SFTP::StatusException
+								@logger.info "Failed to rename file: #{doc["ContentFileName"]} in directory: #{folder}"
+							rescue => e								
+								begin
+									@sftp.rename!(folder+"/dropbox/"+doc["ContentFileName"], folder+"/failed/"+doc["ContentFileName"])
+								rescue Net::SFTP::StatusException
+									@logger.info "Failed to rename file: #{doc["ContentFileName"]} in directory: #{folder}"
+								end
+							end
+						end
+					end
+
+					# update objects
+					directory.objects.values.each do |obj|
+						begin
+							res = @restforce.update(sobject_type, obj)
+							raise RuntimeError, "Failed to update record in SFDC: #{obj["Id"]}" if !res				
+						rescue => e
+							@logger.info "Failed to update record in SFDC: #{obj["Id"]}"
+						end
 					end
 				end
 			end
 		end
+	end
 
-		# if !@@dml_log.empty? then
-			# @logger.info "ERROR: dml failed for the following record ids| "+@@dml_log
-		# end
+	def query_auctions_from_tr(tr_ids)
+
+		trs_to_auctions = {}
+		query_str = 'SELECT Id, Auction__c, Property_State__c FROM Title_Research__c WHERE Program_Record_Type__c = \'WFC 2nd Look Flow\' AND (Property_State__c =\'Ohio\' OR Property_State__c =\'OH\') AND Id IN '
+
+		tr_ids.each do |tr_id|
+			query_str << '(\''+tr_id+'\',' if tr_ids.index(tr_id) == 0
+			query_str << '\''+tr_id+'\',' if tr_ids.index(tr_id) > 0 && tr_ids.index(tr_id) < (tr_ids.length - 1)
+			query_str << '\''+tr_id+'\''+')' if tr_ids.index(tr_id) == (tr_ids.length - 1)
+		end
+
+		sobjects = @restforce.query(query_str)
+
+		sobjects.each do |tr|
+			trs_to_auctions[tr["Id"]] = tr["Auction__c"]
+		end
+
+		trs_to_auctions
+	end
+
+	def build_auction_directory(trs_to_auctions)
+		if !trs_to_auctions.empty? then
+			tr_directory = @sfdc_object_updates["TRL"]
+			auc_objects = {}
+			auc_documents = {}
+
+			trs_to_auctions.keys.each do |tr_id|
+				auc_id = trs_to_auctions[tr_id]
+				auc_objects[auc_id] = {"Id" => auc_id, "PTR_Upload_Date__c" => Date.today}
+				auc_documents[auc_id] = []
+
+				tr_documents = (!tr_directory.documents.has_key?(tr_id) && tr_directory.documents.has_key?(tr_id[0,15])) ? tr_directory.documents[tr_id[0,15]] : tr_directory.documents[tr_id]
+
+				tr_documents.each do |feed_item|
+					auc_feed_item = {"ParentId" => auc_id, "ContentData" => feed_item["ContentData"], "ContentFileName" => feed_item["ContentFileName"], "Body" => feed_item["Body"], "Visibility" => "AllUsers"}
+					auc_documents[auc_id] << auc_feed_item
+				end
+			end
+
+			auc_directory = Directory.new "Auction"
+			auc_directory.objects = auc_objects
+			auc_directory.documents = auc_documents
+
+			auc_directory
+		end
+	end
+
+	class Directory
+
+		attr_accessor :sftp, :objects, :documents, :dir
+
+		def initialize(dir)
+			@dir = dir		
+			@objects = {}
+			@documents = {}
+		end
+
+		def parse!
+			@sftp.dir.foreach(@dir+"/dropbox") do |file|
+				begin
+					if file.name =~ /^*\.pdf$/ then
+
+				    	filename = File.basename(file.name)
+				    	file_type = filename[/-(.*?)\.\w+$/,1]
+				    	record_id = filename[/^(.*?)-/,1]
+
+				    	raise InvalidFileError, "Invalid file abbreviation" if !CLS_FTP_CONFIG[@dir]["files"].has_key?(file_type)
+				    	raise InvalidFileError, "Invalid salesforce record Id" if record_id.nil? || (record_id.length != 18 && record_id.length != 15)
+
+			    		#add a new feed item
+			    		data = @sftp.download!(@dir+"/dropbox/"+filename)
+
+			    		if !@documents.has_key?(record_id) then
+			    			@documents[record_id] = []
+			    		end
+
+			    		@documents[record_id] << {"ParentId" => record_id, "ContentData" => Base64::encode64(data), "ContentFileName" => filename, "Body" => CLS_FTP_CONFIG[@dir]["files"][file_type]["title"], "Visibility" => "AllUsers"}
+
+			    		#add the fields to the record
+			    		object = @objects.has_key?(record_id) ? @objects[record_id] : { "Id" => record_id }
+						CLS_FTP_CONFIG[@dir]["files"][file_type]["fields"].each do |fld|
+							object[fld] = Date.today
+						end
+
+						@objects[record_id] = object
+				    end   
+				rescue => e
+					@sftp.rename!(@dir+"/dropbox/"+file.name, @dir+"/failed/"+file.name)
+				end
+		  	end			
+		end
 	end
 end
