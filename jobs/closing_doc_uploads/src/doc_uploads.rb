@@ -48,6 +48,9 @@ class DocUploads < Job
 	class InvalidFileError < RuntimeError
 	end
 
+	class EmptyDirectory < RuntimeError
+	end
+
 	def initialize(options, logger)
 		super(options, logger)		
 	end
@@ -64,29 +67,43 @@ class DocUploads < Job
 		Net::SFTP.start(@options['sftp']['closing']['host'], @options['sftp']['closing']['username'], :password => @options['sftp']['closing']['password']) do |sftp|
 			@sftp = sftp
 
-			@sftp.dir.foreach("/") do |dir|
+			@sftp.dir.foreach("/") do |dir|				
 				if dir.name.match(/\.\w+/).nil? && CLS_FTP_CONFIG.has_key?(dir.name) then
+					puts dir.name
 					begin
 						ftp_dir = Directory.new dir.name
 						ftp_dir.sftp = @sftp
 						ftp_dir.parse!
 
-						@sfdc_object_updates[dir.name] = ftp_dir						
+						raise EmptyDirectory, "No documents for processing in: #{dir.name}" if ftp_dir.documents.empty?
+						@sfdc_object_updates[dir.name] = ftp_dir
+
 					rescue Net::SFTP::StatusException => e
 						@logger.info "Invalid Directory "+dir.name
+
+					rescue EmptyDirectory => e
+						puts e
+						@logger.info "Empty directory #{e}"
 					end
 				end
 			end
-		
+
 			#create auction documents and objects for Ohio Wells Fargo properties
 			if @sfdc_object_updates.has_key?("TRL") && !@sfdc_object_updates["TRL"].documents.empty? then
 
-				tr_ids = @sfdc_object_updates["TRL"].objects.keys				
-				trs_to_auctions = query_auctions_from_tr(tr_ids)				
+				tr_ids = @sfdc_object_updates["TRL"].objects.keys
 
-				if !trs_to_auctions.empty? then
-					auc_directory = build_auction_directory(trs_to_auctions)				
-					@sfdc_object_updates["Auction"] = auc_directory
+				begin			
+					trs_to_auctions = query_auctions_from_tr(tr_ids)				
+
+					if !trs_to_auctions.empty? then
+						auc_directory = build_auction_directory(trs_to_auctions)				
+						@sfdc_object_updates["Auction"] = auc_directory
+					end
+
+				rescue => e
+					@logger.info "Failed creating the auction directory"
+
 				end
 			end
 
@@ -106,11 +123,16 @@ class DocUploads < Job
 
 							rescue Net::SFTP::StatusException
 								@logger.info "Failed to rename file: #{doc["ContentFileName"]} in directory: #{folder}"
-							rescue => e								
+
+							rescue => e
+								@logger.info "Failed to push file to salesforce: #{e}"
+
 								begin
 									@sftp.rename!(folder+"/dropbox/"+doc["ContentFileName"], folder+"/failed/"+doc["ContentFileName"])
+
 								rescue Net::SFTP::StatusException
 									@logger.info "Failed to rename file: #{doc["ContentFileName"]} in directory: #{folder}"
+
 								end
 							end
 						end
@@ -120,9 +142,11 @@ class DocUploads < Job
 					directory.objects.values.each do |obj|
 						begin
 							res = @restforce.update(sobject_type, obj)
-							raise RuntimeError, "Failed to update record in SFDC: #{obj["Id"]}" if !res				
+							raise RuntimeError, "Failed to update record in SFDC: #{obj["Id"]}" if !res	
+
 						rescue => e
 							@logger.info "Failed to update record in SFDC: #{obj["Id"]}"
+
 						end
 					end
 				end
@@ -131,15 +155,18 @@ class DocUploads < Job
 	end
 
 	def query_auctions_from_tr(tr_ids)
-
 		trs_to_auctions = {}
-		query_str = 'SELECT Id, Auction__c, Property_State__c FROM Title_Research__c WHERE Program_Record_Type__c = \'WFC 2nd Look Flow\' AND (Property_State__c =\'Ohio\' OR Property_State__c =\'OH\') AND Id IN '
 
+		ids = ""
 		tr_ids.each do |tr_id|
-			query_str << '(\''+tr_id+'\',' if tr_ids.index(tr_id) == 0
-			query_str << '\''+tr_id+'\',' if tr_ids.index(tr_id) > 0 && tr_ids.index(tr_id) < (tr_ids.length - 1)
-			query_str << '\''+tr_id+'\''+')' if tr_ids.index(tr_id) == (tr_ids.length - 1)
+			if ids.length == 0 then
+				ids << "'#{tr_id}'"
+			else
+				ids << ", '#{tr_id}'"
+			end		
 		end
+
+		query_str = "SELECT Id, Auction__c, Property_State__c FROM Title_Research__c WHERE Program_Record_Type__c = 'WFC 2nd Look Flow' AND (Property_State__c ='Ohio' OR Property_State__c ='OH') AND Id IN (#{ids})"
 
 		sobjects = @restforce.query(query_str)
 
@@ -192,21 +219,25 @@ class DocUploads < Job
 				begin
 					if file.name =~ /^*\.pdf$/ then
 
-				    	filename = File.basename(file.name)
+						basefilename = File.basename(file.name)
+				    	filename = basefilename.gsub(/\s+/,"")
 				    	file_type = filename[/-(.*?)\.\w+$/,1]
-				    	record_id = filename[/^(.*?)-/,1]
+				    	file_type = file_type.upcase
+				    	record_id = filename[/^(.*?)-/,1]	
 
-				    	raise InvalidFileError, "Invalid file abbreviation" if !CLS_FTP_CONFIG[@dir]["files"].has_key?(file_type)
+				    	puts file_type	    	
+
+				    	raise InvalidFileError, "Invalid file abbreviation" if !CLS_FTP_CONFIG[@dir]["files"].has_key?(file_type.upcase)
 				    	raise InvalidFileError, "Invalid salesforce record Id" if record_id.nil? || (record_id.length != 18 && record_id.length != 15)
 
 			    		#add a new feed item
-			    		data = @sftp.download!(@dir+"/dropbox/"+filename)
+			    		data = @sftp.download!(@dir+"/dropbox/"+basefilename)
 
 			    		if !@documents.has_key?(record_id) then
 			    			@documents[record_id] = []
 			    		end
 
-			    		@documents[record_id] << {"ParentId" => record_id, "ContentData" => Base64::encode64(data), "ContentFileName" => filename, "Body" => CLS_FTP_CONFIG[@dir]["files"][file_type]["title"], "Visibility" => "AllUsers"}
+			    		@documents[record_id] << {"ParentId" => record_id, "ContentData" => Base64::encode64(data), "ContentFileName" => basefilename, "Body" => CLS_FTP_CONFIG[@dir]["files"][file_type]["title"], "Visibility" => "AllUsers"}
 
 			    		#add the fields to the record
 			    		object = @objects.has_key?(record_id) ? @objects[record_id] : { "Id" => record_id }
@@ -217,6 +248,7 @@ class DocUploads < Job
 						@objects[record_id] = object
 				    end   
 				rescue => e
+					puts e
 					@sftp.rename!(@dir+"/dropbox/"+file.name, @dir+"/failed/"+file.name)
 				end
 		  	end			
