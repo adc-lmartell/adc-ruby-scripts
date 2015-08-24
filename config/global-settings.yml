@@ -23,6 +23,18 @@ salesforce:
       client_id: <%= ENV['SF_DEV_CID'] %>
       client_secret: <%= ENV['SF_DEV_CLS'] %>
 
+  internal:
+
+    # Production credentials 
+    production:
+      host: login.salesforce.com
+      instance_url: <%= ENV['SFINT_PROD_URL'] %>
+      username: <%= ENV['SFINT_PROD_USER'] %>
+      password: <%= ENV['SFINT_PROD_PWD'] %>
+      security_token: <%= ENV['SFINT_PROD_TOKEN'] %>
+      client_id: <%= ENV['SFINT_PROD_CID'] %>
+      client_secret: <%= ENV['SFINT_PROD_CLS'] %>
+
 smtp:
   host: <%= ENV['ADC_SMTP_HOST'] %>
   port: <%= ENV['ADC_SMTP_PORT'] %>
