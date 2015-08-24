@@ -57,9 +57,10 @@ class DocUploads < Job
 
 	def execute!
 		
-		restforce_client = get_restforce_client(@options['salesforce']['external']['development'], true)
+		restforce_client = get_restforce_client(@options['salesforce']['external']['production'], true)
 		@restforce = restforce_client[:client]
-		@logger.info "Login successful"		
+		@logger.info "Login successful"
+		puts "SFDC login successful"	
 		
 		#parse SFTP site and collect a set of objects and documents for updates in each folder
 		@sfdc_object_updates = {}
@@ -126,6 +127,7 @@ class DocUploads < Job
 
 							rescue => e
 								@logger.info "Failed to push file to salesforce: #{e}"
+								puts "Failed to push file to salesforce: #{doc["ContentFileName"]} #{e}"
 
 								begin
 									@sftp.rename!(folder+"/dropbox/"+doc["ContentFileName"], folder+"/failed/"+doc["ContentFileName"])
@@ -146,7 +148,7 @@ class DocUploads < Job
 
 						rescue => e
 							@logger.info "Failed to update record in SFDC: #{obj["Id"]}"
-
+							puts "Failed to update record in SFDC: #{obj["Id"]}"
 						end
 					end
 				end
@@ -224,8 +226,7 @@ class DocUploads < Job
 				    	file_type = filename[/-(.*?)\.\w+$/,1]
 				    	file_type = file_type.upcase
 				    	record_id = filename[/^(.*?)-/,1]	
-
-				    	puts file_type	    	
+	    	
 
 				    	raise InvalidFileError, "Invalid file abbreviation" if !CLS_FTP_CONFIG[@dir]["files"].has_key?(file_type.upcase)
 				    	raise InvalidFileError, "Invalid salesforce record Id" if record_id.nil? || (record_id.length != 18 && record_id.length != 15)
