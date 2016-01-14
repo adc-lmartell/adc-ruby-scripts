@@ -1,0 +1,5 @@
+job_path: jobs/seller_zip_exporter
+export_path: data/exports
+logger:
+  filename: ../logs/logfile.log
+  frequency: daily
