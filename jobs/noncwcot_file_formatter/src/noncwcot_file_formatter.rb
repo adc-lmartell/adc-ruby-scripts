@@ -32,9 +32,8 @@ class NonCWCOTFileFormatter < Job
 		super(options, logger)		
 	end
 
+	# Connect to SFTP to pull the seller datatapes and prepare the asset load file
 	def execute!
-		
-		# Connect to SFTP to pull the seller datatapes upload file
 		Net::SFTP.start(@options['sftp']['seller_datatapes']['host'], @options['sftp']['seller_datatapes']['username'], :password => @options['sftp']['seller_datatapes']['password']) do |sftp|
 			entries = sftp.dir.glob("/seller_datatapes", "*.csv").map { |e| e.name }
 
