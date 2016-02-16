@@ -13,7 +13,6 @@ class NonCWCOTFileFormatterRunner < Runner
 		begin
 			NonCWCOTFileFormatter.new(@options, @logger).execute!
 		rescue Exception => e
-			puts e
 			@logger.fatal e.message
 			@logger.fatal e.backtrace.inspect
 		ensure
