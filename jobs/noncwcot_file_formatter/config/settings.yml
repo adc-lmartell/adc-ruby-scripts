@@ -3,6 +3,7 @@ system_files:
   seller_matrix: <%= ENV['SELLER_MATRIX'] %>
   seller_datatape: <%= ENV['SELLER_DATATAPE'] %>
   asset_load: <%= ENV['ASSET_LOAD'] %>
+  reo_auc_load: <%= ENV['REO_AUC_LOAD'] %>
 required_fields:
   matrix:
     - Seller Code
