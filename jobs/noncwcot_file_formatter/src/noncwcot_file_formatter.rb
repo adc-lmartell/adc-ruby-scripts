@@ -5,6 +5,7 @@ require 'csv'
 
 class NonCWCOTFileFormatter < Job
 
+	# Exception class for the files that are required for the script to run
 	class SystemFileDependencyException < Exception
 		def initialize(system_file)
 			@system_file = system_file
@@ -15,6 +16,7 @@ class NonCWCOTFileFormatter < Job
 		end
 	end
 
+	# Exception class for the required columns needed in the seller matrix
 	class MissingMatrixColumnException < Exception
 		def initialize(required_field, source_file)
 			@required_field = required_field
@@ -31,8 +33,7 @@ class NonCWCOTFileFormatter < Job
 	end
 
 	def execute!
-		config = Hash.new
-
+		
 		# Connect to SFTP to pull the seller datatapes upload file
 		Net::SFTP.start(@options['sftp']['seller_datatapes']['host'], @options['sftp']['seller_datatapes']['username'], :password => @options['sftp']['seller_datatapes']['password']) do |sftp|
 			entries = sftp.dir.glob("/seller_datatapes", "*.csv").map { |e| e.name }
@@ -64,14 +65,14 @@ class NonCWCOTFileFormatter < Job
 				File.delete(f)
 			end
 		end
-
 		sftp.rename("/seller_datatapes/#{@options['system_files']['seller_datatape']}", "/seller_datatapes/archive/#{@options['system_files']['seller_datatape']}-#{Time.now.strftime('%Y%m%d%H%M%S')}")
 	end
 
+	# Download the seller files (matrix and datatape) and then convert the datatape into the asset load file
 	def download_and_prepare(sftp)
 		matrix = Hash.new
 
-		# Download the seller files for preparation
+		# Download the seller files
 		[@options['system_files']['seller_datatape'], @options['system_files']['seller_matrix']].each do |f|
 			sftp.download!("/seller_datatapes/#{f}", "#{f}")
 		end
@@ -80,11 +81,13 @@ class NonCWCOTFileFormatter < Job
 		matrix_rows = CSV.read(@options['system_files']['seller_matrix'])
 		header_indices = Hash.new
 
+		# Raise an exception if the required fields are not present in seller matrix
 		@options['required_fields']['matrix'].each do |rf|
 			raise MissingMatrixColumnException.new(rf, @options['system_files']['seller_matrix']) unless matrix_rows[0].include?(rf)
 			header_indices[rf] = matrix_rows[0].index(rf)
 		end
 
+		# Build the matrix configuration map that will be used later in the conversion of the datatape
 		matrix_rows.each_with_index do |row, i|
 			matrix[row[header_indices['Seller Code']]] = get_matrix_details(row, header_indices) unless i == 0
 		end
@@ -92,6 +95,7 @@ class NonCWCOTFileFormatter < Job
 		# Pull the seller datatape into the config hash 
 		datatape_rows = CSV.read(@options['system_files']['seller_datatape'])
 
+		# Build the asset load file from the seller datatape and the matrix configuration map
 		CSV.open(@options['system_files']['asset_load'], "wb") do |csv|
 			csv << datatape_rows[0].push(header_indices.keys).flatten!
 
@@ -104,6 +108,7 @@ class NonCWCOTFileFormatter < Job
 		sftp.upload!(@options['system_files']['asset_load'], "/seller_datatapes/#{@options['system_files']['asset_load']}")
 	end
 
+	# Add a row to the asset load file by appending on the matrix configuration
 	def add_row(row, header_indices, matrix)
 		seller_code = row[2]
 
@@ -113,6 +118,7 @@ class NonCWCOTFileFormatter < Job
 		row
 	end
 
+	# Pull in the matrix configuration based on the seller code 
 	def get_matrix_details(row, header_indices)
 		seller_code_map = Hash.new
 
