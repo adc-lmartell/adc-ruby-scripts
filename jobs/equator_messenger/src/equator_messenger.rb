@@ -22,11 +22,11 @@ class EquatorMessenger < Job
 		@logger.info "Logging into Salesforce"
 
 		begin
-			restforce_client = get_restforce_client(@options['salesforce']['external']['production'], true)
+			restforce_client = get_restforce_client(@options['salesforce']['internal']['production'], true)
 			client = restforce_client[:client]
 
 			# Pull the new requests and any old error records for processing
-			eqms = client.query("SELECT Id, Client__c, Loan_Number__c, Subject__c, Body__c, Agent__c, Asset_Manager__c, Sr_Asset_Manager__c, Status__c, Complete_Date__c, Error_Message__c FROM EQ_Message__c WHERE Status__c IN ('Requested', 'Error') ORDER BY CreatedDate DESC LIMIT 10")
+			eqms = client.query("SELECT Id, Client__c, Loan_Number__c, Subject__c, Body__c, Agent__c, Asset_Manager__c, Sr_Asset_Manager__c, Status__c, Complete_Date__c, Error_Message__c FROM EQ_Message__c WHERE Status__c IN ('Requested', 'Error', 'Processing') ORDER BY CreatedDate DESC LIMIT 10")
 
 			unless eqms.size == 0
 				eqms.each do |eqm|
@@ -56,6 +56,7 @@ class EquatorMessenger < Job
 
 	def upload_messages_to_equator(client)
 		b = Watir::Browser.new
+		# b.driver.manage.timeouts.implicit_wait = 10 #10 seconds
 
 		b.goto @login_credentials[:url]
 
@@ -67,17 +68,26 @@ class EquatorMessenger < Job
 
 		@messages.each do |message|
 			begin
-				b.goto "https://vendors.equator.com/index.cfm?event=property.search&clearCookie=true"
+				# b.goto "https://vendors.equator.com/index.cfm?event=property.search&clearCookie=true"
+				b.a(:text,'Properties').click
+				b.a(:text,'Search Properties').wait_until_present
+				b.a(:text,'Search Properties').click
+
 				b.select_list(:name, 'property_SearchType').select "REO Number"
 				b.text_field(:name, 'property_SearchText').set message[:reo_number]
 				b.button(:name, 'btnSearch').click
 
-				b.links(:href, /property\.viewEvents/).last.click
+				b.links(:href, /property\.viewEvents/).last.wait_until_present				
+				uri = b.links(:href, /property\.viewEvents/).last.href
 
+				b.goto "#{uri}"
+
+				b.table(:id, 'propertyHeader').wait_until_present
 				b.links(:text, 'Add Message').last.wait_until_present
 				b.links(:text, 'Add Message').last.click
 
 				b.select_list(:id, 'flag_note_alerts').wait_until_present
+
 
 				if message[:contact_agent] then
 					b.select_list(:id, 'flag_note_alerts').select(Regexp.new("^AGENT"))
