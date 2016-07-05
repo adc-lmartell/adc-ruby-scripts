@@ -35,6 +35,16 @@ salesforce:
       client_id: <%= ENV['SFINT_PROD_CID'] %>
       client_secret: <%= ENV['SFINT_PROD_CLS'] %>
 
+    # Development (sandbox) credentials 
+    development:
+      host: test.salesforce.com
+      instance_url: <%= ENV['SFINT_DEV_URL'] %>
+      username: <%= ENV['SFINT_DEV_USER'] %>
+      password: <%= ENV['SFINT_DEV_PWD'] %>
+      security_token: <%= ENV['SFINT_DEV_TOKEN'] %>
+      client_id: <%= ENV['SFINT_DEV_CID'] %>
+      client_secret: <%= ENV['SFINT_DEV_CLS'] %>  
+
 smtp:
   host: <%= ENV['ADC_SMTP_HOST'] %>
   port: <%= ENV['ADC_SMTP_PORT'] %>
@@ -63,6 +73,12 @@ sftp:
       port: <%= ENV['SDT_SFTP_PORT'] %>
       username: <%= ENV['SDT_SFTP_USER'] %>
       password: <%= ENV['SDT_SFTP_PWD'] %>
+
+  closing-master:
+    host: <%= ENV['COM_SFTP_HOST'] %>
+    port: <%= ENV['COM_SFTP_PORT'] %>
+    username: <%= ENV['COM_SFTP_USER'] %>
+    password: <%= ENV['COM_SFTP_PWD'] %>    
 
 logger:
   filename: ../logs/logfile.log
