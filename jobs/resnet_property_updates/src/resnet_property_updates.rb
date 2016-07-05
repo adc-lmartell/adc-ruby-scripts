@@ -1,7 +1,7 @@
 require "#{ENV['RUNNER_PATH']}/lib/job.rb"
 require 'watir-webdriver'
 require 'watir-webdriver/wait'
-# require 'headless'
+require 'headless'
 require 'ntlm/smtp'
 require 'date'
 
@@ -80,8 +80,8 @@ class ResnetPropertyUpdates < Job
 
 	def update_assets_in_resnet()
 
-		# headless = Headless.new
-		# headless.start
+		headless = Headless.new
+		headless.start
 
 		@properties.each do |outsourcer, properties|
 
@@ -186,6 +186,8 @@ class ResnetPropertyUpdates < Job
 
 			b.close
 		end
+
+		headless.destroy
 	end
 
 
