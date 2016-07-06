@@ -27,7 +27,7 @@ class EquatorMessenger < Job
 			client = restforce_client[:client]
 
 			# Pull the new requests and any old error records for processing
-			eqms = client.query("SELECT Id, Client__c, Loan_Number__c, Subject__c, Body__c, Agent__c, Asset_Manager__c, Sr_Asset_Manager__c, Status__c, Complete_Date__c, Error_Message__c FROM EQ_Message__c WHERE Status__c IN ('Requested', 'Error', 'Processing') AND Target__c = \'Equator\' ORDER BY CreatedDate DESC LIMIT 100")
+			eqms = client.query("SELECT Id, Client__c, Loan_Number__c, Subject__c, Body__c, Agent__c, Asset_Manager__c, Sr_Asset_Manager__c, Status__c, Complete_Date__c, Error_Message__c FROM EQ_Message__c WHERE Status__c IN ('Requested', 'Error', 'Processing') AND Target__c = \'Equator\' ORDER BY CreatedDate DESC LIMIT 10")
 
 			unless eqms.size == 0
 				eqms.each do |eqm|
