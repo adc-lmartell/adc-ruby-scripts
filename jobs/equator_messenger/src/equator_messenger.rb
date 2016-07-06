@@ -1,6 +1,7 @@
 require "#{ENV['RUNNER_PATH']}/lib/job.rb"
 require 'watir-webdriver'
 require 'watir-webdriver/wait'
+require 'headless'
 require 'ntlm/smtp'
 require 'date'
 
@@ -26,7 +27,7 @@ class EquatorMessenger < Job
 			client = restforce_client[:client]
 
 			# Pull the new requests and any old error records for processing
-			eqms = client.query("SELECT Id, Client__c, Loan_Number__c, Subject__c, Body__c, Agent__c, Asset_Manager__c, Sr_Asset_Manager__c, Status__c, Complete_Date__c, Error_Message__c FROM EQ_Message__c WHERE Status__c IN ('Requested', 'Error', 'Processing') ORDER BY CreatedDate DESC LIMIT 10")
+			eqms = client.query("SELECT Id, Client__c, Loan_Number__c, Subject__c, Body__c, Agent__c, Asset_Manager__c, Sr_Asset_Manager__c, Status__c, Complete_Date__c, Error_Message__c FROM EQ_Message__c WHERE Status__c IN ('Requested', 'Error', 'Processing') AND Target__c = \'Equator\' ORDER BY CreatedDate DESC LIMIT 100")
 
 			unless eqms.size == 0
 				eqms.each do |eqm|
@@ -55,6 +56,10 @@ class EquatorMessenger < Job
 	private
 
 	def upload_messages_to_equator(client)
+		# ----Uncomment when running on virtual machine----
+		# headless = Headless.new
+		# headless.start
+
 		b = Watir::Browser.new
 		# b.driver.manage.timeouts.implicit_wait = 10 #10 seconds
 
@@ -113,6 +118,7 @@ class EquatorMessenger < Job
 			end
 		end
 		b.close
+		# headless.destroy
 	end
 
 	def save_sf_record(eqm, status, complete_date, error_message)
