@@ -1,7 +1,7 @@
 require "#{ENV['RUNNER_PATH']}/lib/job.rb"
 require 'watir-webdriver'
 require 'watir-webdriver/wait'
-require 'headless'
+#require 'headless'
 require 'ntlm/smtp'
 require 'date'
 
@@ -18,16 +18,6 @@ class EquatorMessenger < Job
 				:url => "https://vendors.equator.com",
 				:username => "bac_auction@auction.com",
 				:password => "Auction2014"
-			},
-			"Fannie Mae": {
-				:url => "https://vendors.equator.com",
-				:username => "",
-				:password => ""
-			},
-			"Freddie Mac": {
-				:url => "https://vendors.equator.com",
-				:username => "",
-				:password => ""
 			}
 		}
 	end
@@ -83,7 +73,7 @@ class EquatorMessenger < Job
 
 		@messages.each do |message|
 			begin
-				unless @login_credentials.has_key?(message[:client])
+				unless @login_credentials.has_key?(message[:client]) 
 					throw NoClientLoginException.new("No login credentials for client '#{message[:client]}'")
 				end
 
@@ -91,6 +81,7 @@ class EquatorMessenger < Job
 					credentials = @login_credentials[message[:client]]
 
 					b.goto credentials[:url]
+
 					b.text_field(:name, 'enter_username').set credentials[:username]
 					b.text_field(:name, 'enter_password').set credentials[:password]
 					b.button(:name, 'btnLogin').click
