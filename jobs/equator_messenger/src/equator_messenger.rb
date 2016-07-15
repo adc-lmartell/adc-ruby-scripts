@@ -7,7 +7,8 @@ require 'date'
 
 class EquatorMessenger < Job
 
-	class NoClientLoginException < Exception end
+	class NoClientLoginException < Exception 
+	end
 
 	def initialize(options, logger)
 		super(options, logger)
@@ -87,7 +88,7 @@ class EquatorMessenger < Job
 				end
 
 				unless logged_in 
-					credentials = @login_credentials(message[:client])
+					credentials = @login_credentials[message[:client]]
 
 					b.goto credentials[:url]
 					b.text_field(:name, 'enter_username').set credentials[:username]
