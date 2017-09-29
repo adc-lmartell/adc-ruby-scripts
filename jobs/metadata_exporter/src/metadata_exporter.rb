@@ -17,6 +17,20 @@ class MetadataExporter < Job
 
 		@logger.info "Login successful"
 		
+		##
+		# One time export to pull AE Feed Item Changes
+		#
+		# events = client.query("select Id, ParentId, CreatedDate, (select Id, FieldName, NewValue, OldValue from feedtrackedchanges) from Auction_Event__Feed where type = 'TrackedChange' and createddate >= 2017-01-05T00:00:00.000Z")
+
+		# CSV.open("#{export_folder_path}/auction_event_tracked_changes.csv", "wb") do |csv|
+		# 	csv << ['Auction Event ID', 'Related Record ID', 'Created Date', 'Feed Item ID', 'Field API Name', 'Old Value', 'New Value', 'Created Date']
+		# 	events.each do |event|
+		# 		event.FeedTrackedChanges.each do |ftc| 
+		# 			csv << [event.Id, event.ParentId, event.CreatedDate, ftc.Id, ftc.FieldName, ftc.OldValue, ftc.NewValue]
+		# 		end
+		# 	end
+		# end
+
 		so_descs = client.describe
 		so_list = []
 
