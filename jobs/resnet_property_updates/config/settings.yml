@@ -2,24 +2,24 @@ job_path: jobs/resnet_updates
 
 resnet:
   carrington:
-    url: "#{ENV['RES_URL']}"
-    username: "#{ENV['RES_CAR_LOGIN']}"
-    password: "#{ENV['RES_CAR_PWD']}"
+    url: <%=ENV['RES_URL']%>
+    username: <%=ENV['RES_CAR_LOGIN']%>
+    password: <%=ENV['RES_CAR_PWD']%>
 
   les_res:
-    url: "#{ENV['RES_URL']}"
-    username: "#{ENV['RES_LES_LOGIN']}"
-    password: "#{ENV['RES_LES_PWD']}"
+    url: <%=ENV['RES_URL']%>
+    username: <%=ENV['RES_LES_LOGIN']%>
+    password: <%=ENV['RES_LES_PWD']%>
 
   champion:
-    url: "#{ENV['RES_URL']}"
-    username: "#{ENV['RES_CHAMP_LOGIN']}"
-    password: "#{ENV['RES_CAR_PWD']}"
+    url: <%=ENV['RES_URL']%>
+    username: <%=ENV['RES_CHAMP_LOGIN']%>
+    password: <%=ENV['RES_CAR_PWD']%>
 
   single_source:
-    url: "#{ENV['RES_URL']}"
-    username: "#{ENV['RES_SS_LOGIN']}"
-    password: "#{ENV['RES_SS_PWD']}"
+    url: <%=ENV['RES_URL']%>
+    username: <%=ENV['RES_SS_LOGIN']%>
+    password: <%=ENV['RES_SS_PWD']%>
 
 logger:
   filename: ../logs/logfile.log

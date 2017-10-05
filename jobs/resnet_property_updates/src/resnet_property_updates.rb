@@ -2,7 +2,7 @@ require "#{ENV['RUNNER_PATH']}/lib/job.rb"
 require 'watir-webdriver'
 require 'watir-webdriver/wait'
 require 'headless'
-require 'ntlm/smtp'
+#require 'ntlm/smtp'
 require 'date'
 
 class ResnetPropertyUpdates < Job
@@ -14,16 +14,13 @@ class ResnetPropertyUpdates < Job
 	end
 
 	def execute!
-
 		# Login to SFDC for the records that need processed
-		@logger.info "Logging into Salesforce"
 
 		begin
-			restforce_client = get_restforce_client(@options['salesforce']['internal']['development'], true)
+			restforce_client = get_restforce_client(@options['salesforce']['external']['production'], true)
 			client = restforce_client[:client]
-
 			# Pull the new requests and any old error records for processing
-			props = client.query("SELECT Id, Loan_Number__c, Outsourcer__c, Auction_Start_Date__c, Auction_End_Date__c, Finance__c, Highest_Bid__c, Link__c, Reserve__c, Runs__c, Web_Hits__c FROM EQ_Message__c WHERE Status__c IN ('Requested', 'Error', 'Processing') AND Target__c = \'ResNet\' ORDER BY CreatedDate DESC LIMIT 10")
+			props = client.query("SELECT Id, Loan_Number__c, Outsourcer__c, Auction_Start_Date__c, Auction_End_Date__c, Finance__c, Highest_Bid__c, Link__c, Reserve__c, Runs__c, Web_Hits__c FROM External_Update__c WHERE Status__c IN ('Requested', 'Processing') AND Target__c = \'ResNet\' ORDER BY CreatedDate DESC LIMIT 50")
 
 			unless props.size == 0
 				props.each do |prop|
@@ -60,7 +57,7 @@ class ResnetPropertyUpdates < Job
 						})
 						save_sf_record(prop, "Processing", nil, nil)
 					else
-						save_sf_record(prop, "Error", nil, "Outsource not provided.")
+						save_sf_record(prop, "Error", nil, "Outsourcer not provided.")
 					end
 				end
 
@@ -89,10 +86,15 @@ class ResnetPropertyUpdates < Job
 
 			login = @options['resnet'][outsourcer]['username']
 			pwd = @options['resnet'][outsourcer]['password']
+			
+			puts login
+			puts pwd
 
 			b = Watir::Browser.new
 
 			# #direct firefox to URL
+			puts "current URL #{@options['resnet'][outsourcer]['url']}"
+
 			b.goto @options['resnet'][outsourcer]['url']
 
 			#log into resnet
@@ -102,13 +104,23 @@ class ResnetPropertyUpdates < Job
 				b.button(:value, 'Login').click
 			end
 
-			#wait until the global property search is present DO I NEED THIS
-			# b.text_field(:id, 'globalPropertySearch').wait_until_present
-			b.link(:text, 'Properties').wait_until_present
+			begin
+				b.link(:text, 'Properties').wait_until_present
+			rescue Exception => e
+				@logger.info e
+				
+				properties.each do |property|
+					save_sf_record(property[:sf_record], "Error", nil, "Login Failed")
+				end
+				
+				break
+				
+			end
 			
 			properties.each do |property|
 				begin
 					loan = property[:loan_num]	
+					puts loan
 
 					#select the properties tab
 					b.link(:text, 'Properties').click
@@ -203,7 +215,7 @@ class ResnetPropertyUpdates < Job
 	end
 
 	def format_date(date)
-		if !date.match(/(\d+)\-(\d+)\-(\d+)/).nil? then
+		if !date.nil? && !date.match(/(\d+)\-(\d+)\-(\d+)/).nil? then
 			year = "#{$1}".length == 2 ? "20#{$1}" : "#{$1}"
 			month = "#{$2}"
 			day = "#{$3}"

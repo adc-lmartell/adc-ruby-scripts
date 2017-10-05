@@ -13,6 +13,7 @@ class MLHExtractRunner < Runner
 		begin
 			MLHExtract.new(@options, @logger).execute!
 		rescue Exception => e
+			puts e.message
 			@logger.fatal e.message
 			@logger.fatal e.backtrace.inspect
 		ensure
