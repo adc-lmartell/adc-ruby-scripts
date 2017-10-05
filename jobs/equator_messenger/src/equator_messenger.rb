@@ -1,8 +1,11 @@
 require "#{ENV['RUNNER_PATH']}/lib/job.rb"
 require 'watir-webdriver'
-require 'watir-webdriver/wait'
+#require 'headless'
 require 'ntlm/smtp'
 require 'date'
+
+class NoClientLoginException < Exception 
+end
 
 class EquatorMessenger < Job
 
@@ -10,9 +13,11 @@ class EquatorMessenger < Job
 		super(options, logger)
 		@messages = []
 		@login_credentials = {
-			:url => options['equator']['url'],
-			:username => options['equator']['username'],
-			:password => options['equator']['password']
+			"Bank of America" => {
+				:url => "https://vendors.equator.com",
+				:username => "bac_auction@auction.com",
+				:password => "Auction2014"
+			}
 		}
 	end
 
@@ -26,12 +31,13 @@ class EquatorMessenger < Job
 			client = restforce_client[:client]
 
 			# Pull the new requests and any old error records for processing
-			eqms = client.query("SELECT Id, Client__c, Loan_Number__c, Subject__c, Body__c, Agent__c, Asset_Manager__c, Sr_Asset_Manager__c, Status__c, Complete_Date__c, Error_Message__c FROM EQ_Message__c WHERE Status__c IN ('Requested', 'Error', 'Processing') ORDER BY CreatedDate DESC LIMIT 10")
+			eqms = client.query("SELECT Id, Client__c, Loan_Number__c, Subject__c, Body__c, Agent__c, Asset_Manager__c, Sr_Asset_Manager__c, Status__c, Complete_Date__c, Error_Message__c FROM EQ_Message__c WHERE Status__c IN ('Requested', 'Error', 'Processing') AND RecordType.Name = 'Equator Messaging' ORDER BY CreatedDate DESC LIMIT 10")
 
 			unless eqms.size == 0
 				eqms.each do |eqm|
 					@messages.push({
 						:sf_record => eqm,
+						:client => eqm.Client__c,
 						:contact_agent => eqm.Agent__c,
 						:contact_sr_am => eqm.Sr_Asset_Manager__c,
 						:contact_am => eqm.Asset_Manager__c,
@@ -45,7 +51,7 @@ class EquatorMessenger < Job
 			end
 
 		rescue Exception => e
-			@logger.error "Error with Salesforce: #{e}"
+			@logger.error "Error: #{e}"
 		end
 
 		@logger.info "Successfully completed"
@@ -55,19 +61,33 @@ class EquatorMessenger < Job
 	private
 
 	def upload_messages_to_equator(client)
+		logged_in = false
+
+		# ----Uncomment when running on virtual machine----
+		# headless = Headless.new
+		# headless.start
+
 		b = Watir::Browser.new
 		# b.driver.manage.timeouts.implicit_wait = 10 #10 seconds
 
-		b.goto @login_credentials[:url]
-
-		if b.links(:text, 'Search Properties').size == 0
-			b.text_field(:name, 'enter_username').set @login_credentials[:username]
-			b.text_field(:name, 'enter_password').set @login_credentials[:password]
-			b.button(:name, 'btnLogin').click
-		end
-
 		@messages.each do |message|
 			begin
+				unless @login_credentials.has_key?(message[:client]) 
+					raise NoClientLoginException.new("No login credentials for client '#{message[:client]}'")
+				end
+
+				if logged_in == false
+					credentials = @login_credentials[message[:client]]
+
+					b.goto credentials[:url]
+
+					b.text_field(:name, 'enter_username').set credentials[:username]
+					b.text_field(:name, 'enter_password').set credentials[:password]
+					b.button(:name, 'btnLogin').click
+
+					logged_in = true
+				end
+
 				# b.goto "https://vendors.equator.com/index.cfm?event=property.search&clearCookie=true"
 				b.a(:text,'Properties').click
 				b.a(:text,'Search Properties').wait_until_present
@@ -113,6 +133,7 @@ class EquatorMessenger < Job
 			end
 		end
 		b.close
+		# headless.destroy
 	end
 
 	def save_sf_record(eqm, status, complete_date, error_message)
