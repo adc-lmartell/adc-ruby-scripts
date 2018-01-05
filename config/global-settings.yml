@@ -78,7 +78,13 @@ sftp:
     host: <%= ENV['COM_SFTP_HOST'] %>
     port: <%= ENV['COM_SFTP_PORT'] %>
     username: <%= ENV['COM_SFTP_USER'] %>
-    password: <%= ENV['COM_SFTP_PWD'] %>    
+    password: <%= ENV['COM_SFTP_PWD'] %>
+    
+  pacific-union:
+    host: <%= ENV['PUF_SFTP_HOST'] %>
+    port: <%= ENV['PUF_SFTP_PORT'] %>
+    username: <%= ENV['PUF_SFTP_USER'] %>
+    password: <%= ENV['PUF_SFTP_PWD'] %>    
 
 logger:
   filename: ../logs/logfile.log
