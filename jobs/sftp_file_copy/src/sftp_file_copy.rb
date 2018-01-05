@@ -17,7 +17,7 @@ class SftpFileCopy < Job
 
 			path = @options['sftp_path']
 			local_path = @options['local_path']
-			base_filename = @options['base_filename']
+			base_filename = ARGV[0]
 
 			sftp.dir.foreach("/#{path}") do |file|
 				if(file.name.match(/(#{base_filename})\_(#{Date.today.strftime('%Y%m%d')})\.(\w+)/)) then
