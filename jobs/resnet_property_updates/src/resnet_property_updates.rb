@@ -20,7 +20,7 @@ class ResnetPropertyUpdates < Job
 			restforce_client = get_restforce_client(@options['salesforce']['external']['production'], true)
 			client = restforce_client[:client]
 			# Pull the new requests and any old error records for processing
-			props = client.query("SELECT Id, Loan_Number__c, Outsourcer__c, Auction_Start_Date__c, Auction_End_Date__c, Finance__c, Highest_Bid__c, Link__c, Reserve__c, Runs__c, Web_Hits__c FROM External_Update__c WHERE Status__c IN ('Requested', 'Processing') AND Target__c = \'ResNet\' ORDER BY CreatedDate DESC LIMIT 50")
+			props = client.query("SELECT Id, Loan_Number__c, Outsourcer__c, Auction_Start_Date__c, Auction_End_Date__c, Finance__c, Highest_Bid__c, Link__c, Reserve__c, Runs__c, Web_Hits__c FROM External_Update__c WHERE Status__c IN ('Requested', 'Processing','Error') AND Target__c = \'ResNet\' ORDER BY CreatedDate DESC LIMIT 50")
 
 			unless props.size == 0
 				props.each do |prop|

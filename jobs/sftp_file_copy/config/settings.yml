@@ -5,5 +5,5 @@ logger:
   frequency: daily
 
 sftp_path: TEST/Outbound
-local_path: /
+local_path: home/salesfuser/Informatica/CMT/pacific-union/Stage
 base_filename: CWCOT_ADC_NewReferral

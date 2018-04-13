@@ -1,5 +1,7 @@
 require "#{ENV['RUNNER_PATH']}/lib/job.rb"
-require 'watir'
+#require 'watir'
+require 'watir-webdriver'
+require 'watir-webdriver/wait'
 require 'headless'
 
 class NoClientLoginException < Exception 
@@ -63,8 +65,8 @@ class EquatorMessenger < Job
 		logged_in = false
 
 		# ----Uncomment when running on virtual machine----
-		# headless = Headless.new
-		# headless.start
+		headless = Headless.new
+		headless.start
 
 		b = Watir::Browser.new
 		# b.driver.manage.timeouts.implicit_wait = 10 #10 seconds
@@ -140,7 +142,7 @@ class EquatorMessenger < Job
 			end
 		end
 		b.close
-		# headless.destroy
+		headless.destroy
 	end
 
 	def save_sf_record(eqm, status, complete_date, error_message)

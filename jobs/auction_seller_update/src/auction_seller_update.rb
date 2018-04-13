@@ -32,6 +32,7 @@ class AuctionSellerUpdate < Job
 			end
 
 		rescue Exception => e
+			puts e.inspect
 			@logger.error "Error: #{e}"
 		end
 
