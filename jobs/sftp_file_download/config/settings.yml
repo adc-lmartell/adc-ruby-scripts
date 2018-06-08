@@ -1,0 +1,9 @@
+job_path: jobs/sftp_file_copy
+
+logger:
+  filename: ../logs/logfile.log
+  frequency: daily
+
+sftp_path: TEST/Outbound
+local_path: /Users/kdavis/Documents/Ruby
+base_filename: CWCOT_ADC_NewReferral
