@@ -1,2 +1,4 @@
-
-jobs/equator_messenger/bin/runner.sh
+.DS_Store
+jobs/.DS_Store
+jobs/*/logs/*
+data/exports/*
