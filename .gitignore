@@ -1,4 +1,4 @@
 .DS_Store
-jobs/.DS_Store
+*/.DS_Store
 jobs/*/logs/*
 data/exports/*
