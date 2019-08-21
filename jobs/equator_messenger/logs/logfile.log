@@ -1,3 +1,0 @@
-# Logfile created on 2019-08-21 15:00:01 -0700 by logger.rb/31641
-I, [2019-08-21T15:00:01.816561 #27006]  INFO -- : Logging into Salesforce
-I, [2019-08-21T15:00:01.816682 #27006]  INFO -- : {"host"=>"login.salesforce.com", "instance_url"=>nil, "username"=>"kdavis@auction.com", "password"=>"Rockdog5#", "security_token"=>"KGwlhT2gmxizo59JmTzTXpK47", "client_id"=>"3MVG9iTxZANhwHQt0j0oOGc9BodRJK74qbBIve_2lqR_vPBrpJMmz_scGKKTjqztvfmtPtBSLTfH5.tW3YVg3", "client_secret"=>2798385460059144056}
