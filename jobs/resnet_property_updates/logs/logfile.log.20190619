@@ -1,0 +1,55 @@
+# Logfile created on 2019-06-19 05:22:02 -0700 by logger.rb/31641
+I, [2019-06-19T05:22:02.524756 #23798]  INFO -- : {"host"=>"login.salesforce.com", "instance_url"=>nil, "username"=>"kdavis@auction.com", "password"=>"Rockdog5#", "security_token"=>"KGwlhT2gmxizo59JmTzTXpK47", "client_id"=>"3MVG9iTxZANhwHQt0j0oOGc9BodRJK74qbBIve_2lqR_vPBrpJMmz_scGKKTjqztvfmtPtBSLTfH5.tW3YVg3", "client_secret"=>2798385460059144056}
+E, [2019-06-19T05:22:29.818168 #23798] ERROR -- : Error with Salesforce: undefined method `[]' for nil:NilClass
+I, [2019-06-19T05:22:29.818331 #23798]  INFO -- : Successfully completed
+I, [2019-06-19T06:22:01.800491 #22948]  INFO -- : {"host"=>"login.salesforce.com", "instance_url"=>nil, "username"=>"kdavis@auction.com", "password"=>"Rockdog5#", "security_token"=>"KGwlhT2gmxizo59JmTzTXpK47", "client_id"=>"3MVG9iTxZANhwHQt0j0oOGc9BodRJK74qbBIve_2lqR_vPBrpJMmz_scGKKTjqztvfmtPtBSLTfH5.tW3YVg3", "client_secret"=>2798385460059144056}
+E, [2019-06-19T06:22:32.941391 #22948] ERROR -- : Error with Salesforce: undefined method `[]' for nil:NilClass
+I, [2019-06-19T06:22:32.941641 #22948]  INFO -- : Successfully completed
+I, [2019-06-19T07:22:02.348303 #25313]  INFO -- : {"host"=>"login.salesforce.com", "instance_url"=>nil, "username"=>"kdavis@auction.com", "password"=>"Rockdog5#", "security_token"=>"KGwlhT2gmxizo59JmTzTXpK47", "client_id"=>"3MVG9iTxZANhwHQt0j0oOGc9BodRJK74qbBIve_2lqR_vPBrpJMmz_scGKKTjqztvfmtPtBSLTfH5.tW3YVg3", "client_secret"=>2798385460059144056}
+E, [2019-06-19T07:22:29.157716 #25313] ERROR -- : Error with Salesforce: undefined method `[]' for nil:NilClass
+I, [2019-06-19T07:22:29.157867 #25313]  INFO -- : Successfully completed
+I, [2019-06-19T08:22:01.708633 #27771]  INFO -- : {"host"=>"login.salesforce.com", "instance_url"=>nil, "username"=>"kdavis@auction.com", "password"=>"Rockdog5#", "security_token"=>"KGwlhT2gmxizo59JmTzTXpK47", "client_id"=>"3MVG9iTxZANhwHQt0j0oOGc9BodRJK74qbBIve_2lqR_vPBrpJMmz_scGKKTjqztvfmtPtBSLTfH5.tW3YVg3", "client_secret"=>2798385460059144056}
+E, [2019-06-19T08:22:28.676906 #27771] ERROR -- : Error with Salesforce: undefined method `[]' for nil:NilClass
+I, [2019-06-19T08:22:28.677074 #27771]  INFO -- : Successfully completed
+I, [2019-06-19T09:22:02.205617 #26722]  INFO -- : {"host"=>"login.salesforce.com", "instance_url"=>nil, "username"=>"kdavis@auction.com", "password"=>"Rockdog5#", "security_token"=>"KGwlhT2gmxizo59JmTzTXpK47", "client_id"=>"3MVG9iTxZANhwHQt0j0oOGc9BodRJK74qbBIve_2lqR_vPBrpJMmz_scGKKTjqztvfmtPtBSLTfH5.tW3YVg3", "client_secret"=>2798385460059144056}
+E, [2019-06-19T09:22:29.799497 #26722] ERROR -- : Error with Salesforce: undefined method `[]' for nil:NilClass
+I, [2019-06-19T09:22:29.799638 #26722]  INFO -- : Successfully completed
+I, [2019-06-19T10:22:02.412684 #29052]  INFO -- : {"host"=>"login.salesforce.com", "instance_url"=>nil, "username"=>"kdavis@auction.com", "password"=>"Rockdog5#", "security_token"=>"KGwlhT2gmxizo59JmTzTXpK47", "client_id"=>"3MVG9iTxZANhwHQt0j0oOGc9BodRJK74qbBIve_2lqR_vPBrpJMmz_scGKKTjqztvfmtPtBSLTfH5.tW3YVg3", "client_secret"=>2798385460059144056}
+E, [2019-06-19T10:22:30.223692 #29052] ERROR -- : Error with Salesforce: undefined method `[]' for nil:NilClass
+I, [2019-06-19T10:22:30.223917 #29052]  INFO -- : Successfully completed
+I, [2019-06-19T11:22:02.110344 #2588]  INFO -- : {"host"=>"login.salesforce.com", "instance_url"=>nil, "username"=>"kdavis@auction.com", "password"=>"Rockdog5#", "security_token"=>"KGwlhT2gmxizo59JmTzTXpK47", "client_id"=>"3MVG9iTxZANhwHQt0j0oOGc9BodRJK74qbBIve_2lqR_vPBrpJMmz_scGKKTjqztvfmtPtBSLTfH5.tW3YVg3", "client_secret"=>2798385460059144056}
+E, [2019-06-19T11:22:31.497493 #2588] ERROR -- : Error with Salesforce: undefined method `[]' for nil:NilClass
+I, [2019-06-19T11:22:31.497636 #2588]  INFO -- : Successfully completed
+I, [2019-06-19T12:22:02.447898 #9243]  INFO -- : {"host"=>"login.salesforce.com", "instance_url"=>nil, "username"=>"kdavis@auction.com", "password"=>"Rockdog5#", "security_token"=>"KGwlhT2gmxizo59JmTzTXpK47", "client_id"=>"3MVG9iTxZANhwHQt0j0oOGc9BodRJK74qbBIve_2lqR_vPBrpJMmz_scGKKTjqztvfmtPtBSLTfH5.tW3YVg3", "client_secret"=>2798385460059144056}
+E, [2019-06-19T12:22:31.196551 #9243] ERROR -- : Error with Salesforce: undefined method `[]' for nil:NilClass
+I, [2019-06-19T12:22:31.196697 #9243]  INFO -- : Successfully completed
+I, [2019-06-19T13:22:01.828102 #9439]  INFO -- : {"host"=>"login.salesforce.com", "instance_url"=>nil, "username"=>"kdavis@auction.com", "password"=>"Rockdog5#", "security_token"=>"KGwlhT2gmxizo59JmTzTXpK47", "client_id"=>"3MVG9iTxZANhwHQt0j0oOGc9BodRJK74qbBIve_2lqR_vPBrpJMmz_scGKKTjqztvfmtPtBSLTfH5.tW3YVg3", "client_secret"=>2798385460059144056}
+E, [2019-06-19T13:22:30.372184 #9439] ERROR -- : Error with Salesforce: undefined method `[]' for nil:NilClass
+I, [2019-06-19T13:22:30.372344 #9439]  INFO -- : Successfully completed
+I, [2019-06-19T14:22:03.083008 #13290]  INFO -- : {"host"=>"login.salesforce.com", "instance_url"=>nil, "username"=>"kdavis@auction.com", "password"=>"Rockdog5#", "security_token"=>"KGwlhT2gmxizo59JmTzTXpK47", "client_id"=>"3MVG9iTxZANhwHQt0j0oOGc9BodRJK74qbBIve_2lqR_vPBrpJMmz_scGKKTjqztvfmtPtBSLTfH5.tW3YVg3", "client_secret"=>2798385460059144056}
+E, [2019-06-19T14:22:30.202823 #13290] ERROR -- : Error with Salesforce: undefined method `[]' for nil:NilClass
+I, [2019-06-19T14:22:30.202968 #13290]  INFO -- : Successfully completed
+I, [2019-06-19T15:22:01.891626 #18432]  INFO -- : {"host"=>"login.salesforce.com", "instance_url"=>nil, "username"=>"kdavis@auction.com", "password"=>"Rockdog5#", "security_token"=>"KGwlhT2gmxizo59JmTzTXpK47", "client_id"=>"3MVG9iTxZANhwHQt0j0oOGc9BodRJK74qbBIve_2lqR_vPBrpJMmz_scGKKTjqztvfmtPtBSLTfH5.tW3YVg3", "client_secret"=>2798385460059144056}
+E, [2019-06-19T15:22:28.554083 #18432] ERROR -- : Error with Salesforce: undefined method `[]' for nil:NilClass
+I, [2019-06-19T15:22:28.554293 #18432]  INFO -- : Successfully completed
+I, [2019-06-19T16:22:01.626762 #19793]  INFO -- : {"host"=>"login.salesforce.com", "instance_url"=>nil, "username"=>"kdavis@auction.com", "password"=>"Rockdog5#", "security_token"=>"KGwlhT2gmxizo59JmTzTXpK47", "client_id"=>"3MVG9iTxZANhwHQt0j0oOGc9BodRJK74qbBIve_2lqR_vPBrpJMmz_scGKKTjqztvfmtPtBSLTfH5.tW3YVg3", "client_secret"=>2798385460059144056}
+E, [2019-06-19T16:22:28.933624 #19793] ERROR -- : Error with Salesforce: undefined method `[]' for nil:NilClass
+I, [2019-06-19T16:22:28.933770 #19793]  INFO -- : Successfully completed
+I, [2019-06-19T17:22:01.767346 #19542]  INFO -- : {"host"=>"login.salesforce.com", "instance_url"=>nil, "username"=>"kdavis@auction.com", "password"=>"Rockdog5#", "security_token"=>"KGwlhT2gmxizo59JmTzTXpK47", "client_id"=>"3MVG9iTxZANhwHQt0j0oOGc9BodRJK74qbBIve_2lqR_vPBrpJMmz_scGKKTjqztvfmtPtBSLTfH5.tW3YVg3", "client_secret"=>2798385460059144056}
+E, [2019-06-19T17:22:27.128586 #19542] ERROR -- : Error with Salesforce: undefined method `[]' for nil:NilClass
+I, [2019-06-19T17:22:27.128791 #19542]  INFO -- : Successfully completed
+I, [2019-06-19T18:22:01.849253 #20128]  INFO -- : {"host"=>"login.salesforce.com", "instance_url"=>nil, "username"=>"kdavis@auction.com", "password"=>"Rockdog5#", "security_token"=>"KGwlhT2gmxizo59JmTzTXpK47", "client_id"=>"3MVG9iTxZANhwHQt0j0oOGc9BodRJK74qbBIve_2lqR_vPBrpJMmz_scGKKTjqztvfmtPtBSLTfH5.tW3YVg3", "client_secret"=>2798385460059144056}
+E, [2019-06-19T18:22:27.574212 #20128] ERROR -- : Error with Salesforce: undefined method `[]' for nil:NilClass
+I, [2019-06-19T18:22:27.574407 #20128]  INFO -- : Successfully completed
+I, [2019-06-19T19:22:01.568600 #22361]  INFO -- : {"host"=>"login.salesforce.com", "instance_url"=>nil, "username"=>"kdavis@auction.com", "password"=>"Rockdog5#", "security_token"=>"KGwlhT2gmxizo59JmTzTXpK47", "client_id"=>"3MVG9iTxZANhwHQt0j0oOGc9BodRJK74qbBIve_2lqR_vPBrpJMmz_scGKKTjqztvfmtPtBSLTfH5.tW3YVg3", "client_secret"=>2798385460059144056}
+E, [2019-06-19T19:22:27.124052 #22361] ERROR -- : Error with Salesforce: undefined method `[]' for nil:NilClass
+I, [2019-06-19T19:22:27.124294 #22361]  INFO -- : Successfully completed
+I, [2019-06-19T20:22:01.719036 #21743]  INFO -- : {"host"=>"login.salesforce.com", "instance_url"=>nil, "username"=>"kdavis@auction.com", "password"=>"Rockdog5#", "security_token"=>"KGwlhT2gmxizo59JmTzTXpK47", "client_id"=>"3MVG9iTxZANhwHQt0j0oOGc9BodRJK74qbBIve_2lqR_vPBrpJMmz_scGKKTjqztvfmtPtBSLTfH5.tW3YVg3", "client_secret"=>2798385460059144056}
+E, [2019-06-19T20:22:27.444162 #21743] ERROR -- : Error with Salesforce: undefined method `[]' for nil:NilClass
+I, [2019-06-19T20:22:27.444523 #21743]  INFO -- : Successfully completed
+I, [2019-06-19T21:22:01.666305 #19177]  INFO -- : {"host"=>"login.salesforce.com", "instance_url"=>nil, "username"=>"kdavis@auction.com", "password"=>"Rockdog5#", "security_token"=>"KGwlhT2gmxizo59JmTzTXpK47", "client_id"=>"3MVG9iTxZANhwHQt0j0oOGc9BodRJK74qbBIve_2lqR_vPBrpJMmz_scGKKTjqztvfmtPtBSLTfH5.tW3YVg3", "client_secret"=>2798385460059144056}
+E, [2019-06-19T21:22:26.240855 #19177] ERROR -- : Error with Salesforce: undefined method `[]' for nil:NilClass
+I, [2019-06-19T21:22:26.241112 #19177]  INFO -- : Successfully completed
+I, [2019-06-19T22:22:02.740258 #21887]  INFO -- : {"host"=>"login.salesforce.com", "instance_url"=>nil, "username"=>"kdavis@auction.com", "password"=>"Rockdog5#", "security_token"=>"KGwlhT2gmxizo59JmTzTXpK47", "client_id"=>"3MVG9iTxZANhwHQt0j0oOGc9BodRJK74qbBIve_2lqR_vPBrpJMmz_scGKKTjqztvfmtPtBSLTfH5.tW3YVg3", "client_secret"=>2798385460059144056}
+E, [2019-06-19T22:22:26.210127 #21887] ERROR -- : Error with Salesforce: undefined method `[]' for nil:NilClass
+I, [2019-06-19T22:22:26.210477 #21887]  INFO -- : Successfully completed

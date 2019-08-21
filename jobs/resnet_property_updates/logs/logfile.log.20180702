@@ -1,0 +1,199 @@
+# Logfile created on 2018-07-02 05:22:02 -0700 by logger.rb/31641
+I, [2018-07-02T05:22:02.382397 #27666]  INFO -- : {"host"=>"login.salesforce.com", "instance_url"=>nil, "username"=>"kdavis@auction.com", "password"=>"Rockdog5#", "security_token"=>"KGwlhT2gmxizo59JmTzTXpK47", "client_id"=>"3MVG9iTxZANhwHQt0j0oOGc9BodRJK74qbBIve_2lqR_vPBrpJMmz_scGKKTjqztvfmtPtBSLTfH5.tW3YVg3", "client_secret"=>2798385460059144056}
+I, [2018-07-02T05:23:19.469020 #27666]  INFO -- : timed out after 30 seconds, waiting for {:text=>"Properties", :tag_name=>"a"} to become present (Watir::Wait::TimeoutError)
+/home/salesfuser/.rvm/gems/ruby-1.9.3-p551/gems/watir-webdriver-0.9.1/lib/watir-webdriver/wait.rb:44:in `until'
+/home/salesfuser/.rvm/gems/ruby-1.9.3-p551/gems/watir-webdriver-0.9.1/lib/watir-webdriver/wait.rb:223:in `wait_until_present'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:108:in `block in update_assets_in_resnet'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:83:in `each'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:83:in `update_assets_in_resnet'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:64:in `execute!'
+resnet_property_updates-runner.rb:14:in `run!'
+resnet_property_updates-runner.rb:24:in `<main>'
+I, [2018-07-02T05:23:21.119075 #27666]  INFO -- : Successfully completed
+I, [2018-07-02T06:22:02.362686 #12910]  INFO -- : {"host"=>"login.salesforce.com", "instance_url"=>nil, "username"=>"kdavis@auction.com", "password"=>"Rockdog5#", "security_token"=>"KGwlhT2gmxizo59JmTzTXpK47", "client_id"=>"3MVG9iTxZANhwHQt0j0oOGc9BodRJK74qbBIve_2lqR_vPBrpJMmz_scGKKTjqztvfmtPtBSLTfH5.tW3YVg3", "client_secret"=>2798385460059144056}
+I, [2018-07-02T06:23:16.718694 #12910]  INFO -- : timed out after 30 seconds, waiting for {:text=>"Properties", :tag_name=>"a"} to become present (Watir::Wait::TimeoutError)
+/home/salesfuser/.rvm/gems/ruby-1.9.3-p551/gems/watir-webdriver-0.9.1/lib/watir-webdriver/wait.rb:44:in `until'
+/home/salesfuser/.rvm/gems/ruby-1.9.3-p551/gems/watir-webdriver-0.9.1/lib/watir-webdriver/wait.rb:223:in `wait_until_present'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:108:in `block in update_assets_in_resnet'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:83:in `each'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:83:in `update_assets_in_resnet'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:64:in `execute!'
+resnet_property_updates-runner.rb:14:in `run!'
+resnet_property_updates-runner.rb:24:in `<main>'
+I, [2018-07-02T06:23:18.314352 #12910]  INFO -- : Successfully completed
+I, [2018-07-02T07:22:02.105403 #31723]  INFO -- : {"host"=>"login.salesforce.com", "instance_url"=>nil, "username"=>"kdavis@auction.com", "password"=>"Rockdog5#", "security_token"=>"KGwlhT2gmxizo59JmTzTXpK47", "client_id"=>"3MVG9iTxZANhwHQt0j0oOGc9BodRJK74qbBIve_2lqR_vPBrpJMmz_scGKKTjqztvfmtPtBSLTfH5.tW3YVg3", "client_secret"=>2798385460059144056}
+I, [2018-07-02T07:23:20.934112 #31723]  INFO -- : timed out after 30 seconds, waiting for {:text=>"Properties", :tag_name=>"a"} to become present (Watir::Wait::TimeoutError)
+/home/salesfuser/.rvm/gems/ruby-1.9.3-p551/gems/watir-webdriver-0.9.1/lib/watir-webdriver/wait.rb:44:in `until'
+/home/salesfuser/.rvm/gems/ruby-1.9.3-p551/gems/watir-webdriver-0.9.1/lib/watir-webdriver/wait.rb:223:in `wait_until_present'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:108:in `block in update_assets_in_resnet'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:83:in `each'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:83:in `update_assets_in_resnet'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:64:in `execute!'
+resnet_property_updates-runner.rb:14:in `run!'
+resnet_property_updates-runner.rb:24:in `<main>'
+I, [2018-07-02T07:23:22.491071 #31723]  INFO -- : Successfully completed
+I, [2018-07-02T08:22:02.119775 #18807]  INFO -- : {"host"=>"login.salesforce.com", "instance_url"=>nil, "username"=>"kdavis@auction.com", "password"=>"Rockdog5#", "security_token"=>"KGwlhT2gmxizo59JmTzTXpK47", "client_id"=>"3MVG9iTxZANhwHQt0j0oOGc9BodRJK74qbBIve_2lqR_vPBrpJMmz_scGKKTjqztvfmtPtBSLTfH5.tW3YVg3", "client_secret"=>2798385460059144056}
+I, [2018-07-02T08:23:18.515508 #18807]  INFO -- : timed out after 30 seconds, waiting for {:text=>"Properties", :tag_name=>"a"} to become present (Watir::Wait::TimeoutError)
+/home/salesfuser/.rvm/gems/ruby-1.9.3-p551/gems/watir-webdriver-0.9.1/lib/watir-webdriver/wait.rb:44:in `until'
+/home/salesfuser/.rvm/gems/ruby-1.9.3-p551/gems/watir-webdriver-0.9.1/lib/watir-webdriver/wait.rb:223:in `wait_until_present'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:108:in `block in update_assets_in_resnet'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:83:in `each'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:83:in `update_assets_in_resnet'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:64:in `execute!'
+resnet_property_updates-runner.rb:14:in `run!'
+resnet_property_updates-runner.rb:24:in `<main>'
+I, [2018-07-02T08:23:20.194025 #18807]  INFO -- : Successfully completed
+I, [2018-07-02T09:22:02.202560 #11468]  INFO -- : {"host"=>"login.salesforce.com", "instance_url"=>nil, "username"=>"kdavis@auction.com", "password"=>"Rockdog5#", "security_token"=>"KGwlhT2gmxizo59JmTzTXpK47", "client_id"=>"3MVG9iTxZANhwHQt0j0oOGc9BodRJK74qbBIve_2lqR_vPBrpJMmz_scGKKTjqztvfmtPtBSLTfH5.tW3YVg3", "client_secret"=>2798385460059144056}
+I, [2018-07-02T09:23:20.445473 #11468]  INFO -- : timed out after 30 seconds, waiting for {:text=>"Properties", :tag_name=>"a"} to become present (Watir::Wait::TimeoutError)
+/home/salesfuser/.rvm/gems/ruby-1.9.3-p551/gems/watir-webdriver-0.9.1/lib/watir-webdriver/wait.rb:44:in `until'
+/home/salesfuser/.rvm/gems/ruby-1.9.3-p551/gems/watir-webdriver-0.9.1/lib/watir-webdriver/wait.rb:223:in `wait_until_present'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:108:in `block in update_assets_in_resnet'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:83:in `each'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:83:in `update_assets_in_resnet'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:64:in `execute!'
+resnet_property_updates-runner.rb:14:in `run!'
+resnet_property_updates-runner.rb:24:in `<main>'
+I, [2018-07-02T09:23:35.931488 #11468]  INFO -- : Successfully completed
+I, [2018-07-02T10:22:02.090445 #394]  INFO -- : {"host"=>"login.salesforce.com", "instance_url"=>nil, "username"=>"kdavis@auction.com", "password"=>"Rockdog5#", "security_token"=>"KGwlhT2gmxizo59JmTzTXpK47", "client_id"=>"3MVG9iTxZANhwHQt0j0oOGc9BodRJK74qbBIve_2lqR_vPBrpJMmz_scGKKTjqztvfmtPtBSLTfH5.tW3YVg3", "client_secret"=>2798385460059144056}
+I, [2018-07-02T10:23:16.445169 #394]  INFO -- : timed out after 30 seconds, waiting for {:text=>"Properties", :tag_name=>"a"} to become present (Watir::Wait::TimeoutError)
+/home/salesfuser/.rvm/gems/ruby-1.9.3-p551/gems/watir-webdriver-0.9.1/lib/watir-webdriver/wait.rb:44:in `until'
+/home/salesfuser/.rvm/gems/ruby-1.9.3-p551/gems/watir-webdriver-0.9.1/lib/watir-webdriver/wait.rb:223:in `wait_until_present'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:108:in `block in update_assets_in_resnet'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:83:in `each'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:83:in `update_assets_in_resnet'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:64:in `execute!'
+resnet_property_updates-runner.rb:14:in `run!'
+resnet_property_updates-runner.rb:24:in `<main>'
+I, [2018-07-02T10:23:34.373396 #394]  INFO -- : Successfully completed
+I, [2018-07-02T11:22:01.543068 #24204]  INFO -- : {"host"=>"login.salesforce.com", "instance_url"=>nil, "username"=>"kdavis@auction.com", "password"=>"Rockdog5#", "security_token"=>"KGwlhT2gmxizo59JmTzTXpK47", "client_id"=>"3MVG9iTxZANhwHQt0j0oOGc9BodRJK74qbBIve_2lqR_vPBrpJMmz_scGKKTjqztvfmtPtBSLTfH5.tW3YVg3", "client_secret"=>2798385460059144056}
+I, [2018-07-02T11:23:15.337452 #24204]  INFO -- : timed out after 30 seconds, waiting for {:text=>"Properties", :tag_name=>"a"} to become present (Watir::Wait::TimeoutError)
+/home/salesfuser/.rvm/gems/ruby-1.9.3-p551/gems/watir-webdriver-0.9.1/lib/watir-webdriver/wait.rb:44:in `until'
+/home/salesfuser/.rvm/gems/ruby-1.9.3-p551/gems/watir-webdriver-0.9.1/lib/watir-webdriver/wait.rb:223:in `wait_until_present'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:108:in `block in update_assets_in_resnet'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:83:in `each'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:83:in `update_assets_in_resnet'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:64:in `execute!'
+resnet_property_updates-runner.rb:14:in `run!'
+resnet_property_updates-runner.rb:24:in `<main>'
+I, [2018-07-02T11:23:27.646623 #24204]  INFO -- : Successfully completed
+I, [2018-07-02T12:22:01.509735 #15161]  INFO -- : {"host"=>"login.salesforce.com", "instance_url"=>nil, "username"=>"kdavis@auction.com", "password"=>"Rockdog5#", "security_token"=>"KGwlhT2gmxizo59JmTzTXpK47", "client_id"=>"3MVG9iTxZANhwHQt0j0oOGc9BodRJK74qbBIve_2lqR_vPBrpJMmz_scGKKTjqztvfmtPtBSLTfH5.tW3YVg3", "client_secret"=>2798385460059144056}
+I, [2018-07-02T12:23:17.431461 #15161]  INFO -- : timed out after 30 seconds, waiting for {:text=>"Properties", :tag_name=>"a"} to become present (Watir::Wait::TimeoutError)
+/home/salesfuser/.rvm/gems/ruby-1.9.3-p551/gems/watir-webdriver-0.9.1/lib/watir-webdriver/wait.rb:44:in `until'
+/home/salesfuser/.rvm/gems/ruby-1.9.3-p551/gems/watir-webdriver-0.9.1/lib/watir-webdriver/wait.rb:223:in `wait_until_present'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:108:in `block in update_assets_in_resnet'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:83:in `each'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:83:in `update_assets_in_resnet'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:64:in `execute!'
+resnet_property_updates-runner.rb:14:in `run!'
+resnet_property_updates-runner.rb:24:in `<main>'
+I, [2018-07-02T12:23:29.592846 #15161]  INFO -- : Successfully completed
+I, [2018-07-02T13:22:01.711377 #4555]  INFO -- : {"host"=>"login.salesforce.com", "instance_url"=>nil, "username"=>"kdavis@auction.com", "password"=>"Rockdog5#", "security_token"=>"KGwlhT2gmxizo59JmTzTXpK47", "client_id"=>"3MVG9iTxZANhwHQt0j0oOGc9BodRJK74qbBIve_2lqR_vPBrpJMmz_scGKKTjqztvfmtPtBSLTfH5.tW3YVg3", "client_secret"=>2798385460059144056}
+I, [2018-07-02T13:23:18.809532 #4555]  INFO -- : timed out after 30 seconds, waiting for {:text=>"Properties", :tag_name=>"a"} to become present (Watir::Wait::TimeoutError)
+/home/salesfuser/.rvm/gems/ruby-1.9.3-p551/gems/watir-webdriver-0.9.1/lib/watir-webdriver/wait.rb:44:in `until'
+/home/salesfuser/.rvm/gems/ruby-1.9.3-p551/gems/watir-webdriver-0.9.1/lib/watir-webdriver/wait.rb:223:in `wait_until_present'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:108:in `block in update_assets_in_resnet'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:83:in `each'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:83:in `update_assets_in_resnet'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:64:in `execute!'
+resnet_property_updates-runner.rb:14:in `run!'
+resnet_property_updates-runner.rb:24:in `<main>'
+I, [2018-07-02T13:23:31.681608 #4555]  INFO -- : Successfully completed
+I, [2018-07-02T14:22:01.760855 #25786]  INFO -- : {"host"=>"login.salesforce.com", "instance_url"=>nil, "username"=>"kdavis@auction.com", "password"=>"Rockdog5#", "security_token"=>"KGwlhT2gmxizo59JmTzTXpK47", "client_id"=>"3MVG9iTxZANhwHQt0j0oOGc9BodRJK74qbBIve_2lqR_vPBrpJMmz_scGKKTjqztvfmtPtBSLTfH5.tW3YVg3", "client_secret"=>2798385460059144056}
+I, [2018-07-02T14:23:14.548159 #25786]  INFO -- : timed out after 30 seconds, waiting for {:text=>"Properties", :tag_name=>"a"} to become present (Watir::Wait::TimeoutError)
+/home/salesfuser/.rvm/gems/ruby-1.9.3-p551/gems/watir-webdriver-0.9.1/lib/watir-webdriver/wait.rb:44:in `until'
+/home/salesfuser/.rvm/gems/ruby-1.9.3-p551/gems/watir-webdriver-0.9.1/lib/watir-webdriver/wait.rb:223:in `wait_until_present'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:108:in `block in update_assets_in_resnet'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:83:in `each'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:83:in `update_assets_in_resnet'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:64:in `execute!'
+resnet_property_updates-runner.rb:14:in `run!'
+resnet_property_updates-runner.rb:24:in `<main>'
+I, [2018-07-02T14:23:30.028901 #25786]  INFO -- : Successfully completed
+I, [2018-07-02T15:22:02.312100 #15714]  INFO -- : {"host"=>"login.salesforce.com", "instance_url"=>nil, "username"=>"kdavis@auction.com", "password"=>"Rockdog5#", "security_token"=>"KGwlhT2gmxizo59JmTzTXpK47", "client_id"=>"3MVG9iTxZANhwHQt0j0oOGc9BodRJK74qbBIve_2lqR_vPBrpJMmz_scGKKTjqztvfmtPtBSLTfH5.tW3YVg3", "client_secret"=>2798385460059144056}
+I, [2018-07-02T15:23:14.761910 #15714]  INFO -- : timed out after 30 seconds, waiting for {:text=>"Properties", :tag_name=>"a"} to become present (Watir::Wait::TimeoutError)
+/home/salesfuser/.rvm/gems/ruby-1.9.3-p551/gems/watir-webdriver-0.9.1/lib/watir-webdriver/wait.rb:44:in `until'
+/home/salesfuser/.rvm/gems/ruby-1.9.3-p551/gems/watir-webdriver-0.9.1/lib/watir-webdriver/wait.rb:223:in `wait_until_present'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:108:in `block in update_assets_in_resnet'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:83:in `each'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:83:in `update_assets_in_resnet'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:64:in `execute!'
+resnet_property_updates-runner.rb:14:in `run!'
+resnet_property_updates-runner.rb:24:in `<main>'
+I, [2018-07-02T15:23:27.746463 #15714]  INFO -- : Successfully completed
+I, [2018-07-02T16:22:02.212568 #3687]  INFO -- : {"host"=>"login.salesforce.com", "instance_url"=>nil, "username"=>"kdavis@auction.com", "password"=>"Rockdog5#", "security_token"=>"KGwlhT2gmxizo59JmTzTXpK47", "client_id"=>"3MVG9iTxZANhwHQt0j0oOGc9BodRJK74qbBIve_2lqR_vPBrpJMmz_scGKKTjqztvfmtPtBSLTfH5.tW3YVg3", "client_secret"=>2798385460059144056}
+I, [2018-07-02T16:23:16.111583 #3687]  INFO -- : timed out after 30 seconds, waiting for {:text=>"Properties", :tag_name=>"a"} to become present (Watir::Wait::TimeoutError)
+/home/salesfuser/.rvm/gems/ruby-1.9.3-p551/gems/watir-webdriver-0.9.1/lib/watir-webdriver/wait.rb:44:in `until'
+/home/salesfuser/.rvm/gems/ruby-1.9.3-p551/gems/watir-webdriver-0.9.1/lib/watir-webdriver/wait.rb:223:in `wait_until_present'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:108:in `block in update_assets_in_resnet'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:83:in `each'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:83:in `update_assets_in_resnet'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:64:in `execute!'
+resnet_property_updates-runner.rb:14:in `run!'
+resnet_property_updates-runner.rb:24:in `<main>'
+I, [2018-07-02T16:23:28.722545 #3687]  INFO -- : Successfully completed
+I, [2018-07-02T17:22:01.461554 #22023]  INFO -- : {"host"=>"login.salesforce.com", "instance_url"=>nil, "username"=>"kdavis@auction.com", "password"=>"Rockdog5#", "security_token"=>"KGwlhT2gmxizo59JmTzTXpK47", "client_id"=>"3MVG9iTxZANhwHQt0j0oOGc9BodRJK74qbBIve_2lqR_vPBrpJMmz_scGKKTjqztvfmtPtBSLTfH5.tW3YVg3", "client_secret"=>2798385460059144056}
+I, [2018-07-02T17:23:12.910498 #22023]  INFO -- : timed out after 30 seconds, waiting for {:text=>"Properties", :tag_name=>"a"} to become present (Watir::Wait::TimeoutError)
+/home/salesfuser/.rvm/gems/ruby-1.9.3-p551/gems/watir-webdriver-0.9.1/lib/watir-webdriver/wait.rb:44:in `until'
+/home/salesfuser/.rvm/gems/ruby-1.9.3-p551/gems/watir-webdriver-0.9.1/lib/watir-webdriver/wait.rb:223:in `wait_until_present'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:108:in `block in update_assets_in_resnet'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:83:in `each'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:83:in `update_assets_in_resnet'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:64:in `execute!'
+resnet_property_updates-runner.rb:14:in `run!'
+resnet_property_updates-runner.rb:24:in `<main>'
+I, [2018-07-02T17:23:27.030743 #22023]  INFO -- : Successfully completed
+I, [2018-07-02T18:22:01.858166 #10402]  INFO -- : {"host"=>"login.salesforce.com", "instance_url"=>nil, "username"=>"kdavis@auction.com", "password"=>"Rockdog5#", "security_token"=>"KGwlhT2gmxizo59JmTzTXpK47", "client_id"=>"3MVG9iTxZANhwHQt0j0oOGc9BodRJK74qbBIve_2lqR_vPBrpJMmz_scGKKTjqztvfmtPtBSLTfH5.tW3YVg3", "client_secret"=>2798385460059144056}
+I, [2018-07-02T18:23:15.946382 #10402]  INFO -- : timed out after 30 seconds, waiting for {:text=>"Properties", :tag_name=>"a"} to become present (Watir::Wait::TimeoutError)
+/home/salesfuser/.rvm/gems/ruby-1.9.3-p551/gems/watir-webdriver-0.9.1/lib/watir-webdriver/wait.rb:44:in `until'
+/home/salesfuser/.rvm/gems/ruby-1.9.3-p551/gems/watir-webdriver-0.9.1/lib/watir-webdriver/wait.rb:223:in `wait_until_present'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:108:in `block in update_assets_in_resnet'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:83:in `each'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:83:in `update_assets_in_resnet'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:64:in `execute!'
+resnet_property_updates-runner.rb:14:in `run!'
+resnet_property_updates-runner.rb:24:in `<main>'
+I, [2018-07-02T18:23:27.619812 #10402]  INFO -- : Successfully completed
+I, [2018-07-02T19:22:01.850521 #29708]  INFO -- : {"host"=>"login.salesforce.com", "instance_url"=>nil, "username"=>"kdavis@auction.com", "password"=>"Rockdog5#", "security_token"=>"KGwlhT2gmxizo59JmTzTXpK47", "client_id"=>"3MVG9iTxZANhwHQt0j0oOGc9BodRJK74qbBIve_2lqR_vPBrpJMmz_scGKKTjqztvfmtPtBSLTfH5.tW3YVg3", "client_secret"=>2798385460059144056}
+I, [2018-07-02T19:23:12.734854 #29708]  INFO -- : timed out after 30 seconds, waiting for {:text=>"Properties", :tag_name=>"a"} to become present (Watir::Wait::TimeoutError)
+/home/salesfuser/.rvm/gems/ruby-1.9.3-p551/gems/watir-webdriver-0.9.1/lib/watir-webdriver/wait.rb:44:in `until'
+/home/salesfuser/.rvm/gems/ruby-1.9.3-p551/gems/watir-webdriver-0.9.1/lib/watir-webdriver/wait.rb:223:in `wait_until_present'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:108:in `block in update_assets_in_resnet'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:83:in `each'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:83:in `update_assets_in_resnet'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:64:in `execute!'
+resnet_property_updates-runner.rb:14:in `run!'
+resnet_property_updates-runner.rb:24:in `<main>'
+I, [2018-07-02T19:23:25.996707 #29708]  INFO -- : Successfully completed
+I, [2018-07-02T20:22:02.065740 #16979]  INFO -- : {"host"=>"login.salesforce.com", "instance_url"=>nil, "username"=>"kdavis@auction.com", "password"=>"Rockdog5#", "security_token"=>"KGwlhT2gmxizo59JmTzTXpK47", "client_id"=>"3MVG9iTxZANhwHQt0j0oOGc9BodRJK74qbBIve_2lqR_vPBrpJMmz_scGKKTjqztvfmtPtBSLTfH5.tW3YVg3", "client_secret"=>2798385460059144056}
+I, [2018-07-02T20:23:10.738216 #16979]  INFO -- : timed out after 30 seconds, waiting for {:text=>"Properties", :tag_name=>"a"} to become present (Watir::Wait::TimeoutError)
+/home/salesfuser/.rvm/gems/ruby-1.9.3-p551/gems/watir-webdriver-0.9.1/lib/watir-webdriver/wait.rb:44:in `until'
+/home/salesfuser/.rvm/gems/ruby-1.9.3-p551/gems/watir-webdriver-0.9.1/lib/watir-webdriver/wait.rb:223:in `wait_until_present'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:108:in `block in update_assets_in_resnet'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:83:in `each'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:83:in `update_assets_in_resnet'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:64:in `execute!'
+resnet_property_updates-runner.rb:14:in `run!'
+resnet_property_updates-runner.rb:24:in `<main>'
+I, [2018-07-02T20:23:22.943995 #16979]  INFO -- : Successfully completed
+I, [2018-07-02T21:22:01.846340 #2317]  INFO -- : {"host"=>"login.salesforce.com", "instance_url"=>nil, "username"=>"kdavis@auction.com", "password"=>"Rockdog5#", "security_token"=>"KGwlhT2gmxizo59JmTzTXpK47", "client_id"=>"3MVG9iTxZANhwHQt0j0oOGc9BodRJK74qbBIve_2lqR_vPBrpJMmz_scGKKTjqztvfmtPtBSLTfH5.tW3YVg3", "client_secret"=>2798385460059144056}
+I, [2018-07-02T21:23:11.372428 #2317]  INFO -- : timed out after 30 seconds, waiting for {:text=>"Properties", :tag_name=>"a"} to become present (Watir::Wait::TimeoutError)
+/home/salesfuser/.rvm/gems/ruby-1.9.3-p551/gems/watir-webdriver-0.9.1/lib/watir-webdriver/wait.rb:44:in `until'
+/home/salesfuser/.rvm/gems/ruby-1.9.3-p551/gems/watir-webdriver-0.9.1/lib/watir-webdriver/wait.rb:223:in `wait_until_present'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:108:in `block in update_assets_in_resnet'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:83:in `each'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:83:in `update_assets_in_resnet'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:64:in `execute!'
+resnet_property_updates-runner.rb:14:in `run!'
+resnet_property_updates-runner.rb:24:in `<main>'
+I, [2018-07-02T21:23:24.214440 #2317]  INFO -- : Successfully completed
+I, [2018-07-02T22:22:01.572028 #21715]  INFO -- : {"host"=>"login.salesforce.com", "instance_url"=>nil, "username"=>"kdavis@auction.com", "password"=>"Rockdog5#", "security_token"=>"KGwlhT2gmxizo59JmTzTXpK47", "client_id"=>"3MVG9iTxZANhwHQt0j0oOGc9BodRJK74qbBIve_2lqR_vPBrpJMmz_scGKKTjqztvfmtPtBSLTfH5.tW3YVg3", "client_secret"=>2798385460059144056}
+I, [2018-07-02T22:23:16.480274 #21715]  INFO -- : timed out after 30 seconds, waiting for {:text=>"Properties", :tag_name=>"a"} to become present (Watir::Wait::TimeoutError)
+/home/salesfuser/.rvm/gems/ruby-1.9.3-p551/gems/watir-webdriver-0.9.1/lib/watir-webdriver/wait.rb:44:in `until'
+/home/salesfuser/.rvm/gems/ruby-1.9.3-p551/gems/watir-webdriver-0.9.1/lib/watir-webdriver/wait.rb:223:in `wait_until_present'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:108:in `block in update_assets_in_resnet'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:83:in `each'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:83:in `update_assets_in_resnet'
+/home/salesfuser/Git/adc-ruby-scripts/jobs/resnet_property_updates/src/resnet_property_updates.rb:64:in `execute!'
+resnet_property_updates-runner.rb:14:in `run!'
+resnet_property_updates-runner.rb:24:in `<main>'
+I, [2018-07-02T22:23:28.933088 #21715]  INFO -- : Successfully completed

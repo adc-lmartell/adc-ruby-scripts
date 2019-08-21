@@ -2,7 +2,7 @@ require "#{ENV['RUNNER_PATH']}/lib/job.rb"
 require 'net/sftp'
 require 'date'
 
-class SftpFileCopy < Job
+class SftpFileDownload < Job
 
 	def initialize(options, logger)
 		super(options, logger)

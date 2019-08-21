@@ -48,7 +48,7 @@ class ResnetPropertyUpdates < Job
 							:outsourcer => prop.Outsourcer__c,
 							:start_date => format_date(prop.Auction_Start_Date__c),
 							:end_date => format_date(prop.Auction_End_Date__c), 
-							:finance => (prop.Finance__c.downcase == "yes" || prop.Finance__c.downcase == "no") ? prop.Finance__c : "",
+							:finance => (!prop.finance.nil? && (prop.Finance__c.downcase == "yes" || prop.Finance__c.downcase == "no")) ? prop.Finance__c : "",
 							:high_bid => prop.Highest_Bid__c,
 							:link => prop.Link__c,
 							:reserve => prop.Reserve__c,

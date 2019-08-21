@@ -1,7 +1,7 @@
 require "#{ENV['RUNNER_PATH']}/lib/runner.rb"
 require "../src/sftp_file_download.rb"
 
-class SftpFileCopyRunner < Runner
+class SftpFileDownloadRunner < Runner
 
 	def initialize
 		super()
@@ -11,7 +11,7 @@ class SftpFileCopyRunner < Runner
 
 	def run!
 		begin
-			SftpFileCopy.new(@options, @logger).execute!
+			SftpFileDownload.new(@options, @logger).execute!
 		rescue Exception => e
 			puts e
 			@logger.fatal e.message
@@ -22,4 +22,4 @@ class SftpFileCopyRunner < Runner
 	end
 end
 
-SftpFileCopyRunner.new.run!
+SftpFileDownloadRunner.new.run!

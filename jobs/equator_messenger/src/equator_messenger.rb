@@ -16,7 +16,7 @@ class EquatorMessenger < Job
 			"Bank of America" => {
 				:url => "https://vendors.equator.com",
 				:username => "bac_auction@auction.com",
-				:password => "Auction2014"
+				:password => "Auction2019"
 			}
 		}
 	end
