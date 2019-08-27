@@ -5,7 +5,7 @@ class AuctionSellerUpdateRunner < Runner
 
 	def initialize
 		super()
-		init_options("../config/settings.yml")
+		init_options("#{ENV['RUNNER_PATH']}/jobs/auction_seller_update/config/settings.yml")
 		init_logger()
 	end
 
