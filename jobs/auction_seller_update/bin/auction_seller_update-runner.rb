@@ -1,5 +1,5 @@
 require "#{ENV['RUNNER_PATH']}/lib/runner.rb"
-require "../src/auction_seller_update.rb"
+require "#{ENV['RUNNER_PATH']}/jobs/auction_seller_update/src/auction_seller_update.rb"
 
 class AuctionSellerUpdateRunner < Runner
 
