@@ -87,5 +87,5 @@ sftp:
     password: <%= ENV['PUF_SFTP_PWD'] %>    
 
 logger:
-  filename: ../logs/logfile.log
+  filename: <%= ENV['RUNNER_PATH'] %>/logs/logfile.log
   frequency: daily

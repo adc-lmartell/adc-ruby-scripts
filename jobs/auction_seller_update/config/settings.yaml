@@ -1,5 +1,5 @@
 job_path: jobs/auction_seller_update
 
 logger:
-  filename: "#{ENV['RUNNER_PATH']}/jobs/auction_seller_update/logs/logfile.log"
+  filename: <%= ENV['RUNNER_PATH'] %>/jobs/auction_seller_update/logs/logfile.log
   frequency: daily
