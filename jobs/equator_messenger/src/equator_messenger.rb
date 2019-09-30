@@ -31,9 +31,9 @@ class EquatorMessenger < Job
 			client = restforce_client[:client]
 
 			# Pull the new requests and any old error records for processing
-			eqms = client.query("SELECT Id, Client__c, Loan_Number__c, Subject__c, Body__c, Agent__c, Asset_Manager__c, Sr_Asset_Manager__c, Closing_Officer__c, Sr_Closing_Officer__c, Status__c, Complete_Date__c, Error_Message__c FROM External_Update__c WHERE Status__c IN ('Requested', 'Error', 'Processing') AND RecordType.Name = 'Equator Messaging' ORDER BY CreatedDate DESC LIMIT 25")
+			eqms = client.query("SELECT Id, Client__c, LN_UUID__r.loan_no__c, Subject__c, Body__c, Agent__c, Asset_Manager__c, Sr_Asset_Manager__c, Closing_Officer__c, Sr_Closing_Officer__c, Status__c, Complete_Date__c, Error_Message__c FROM External_Update__c WHERE Status__c IN ('Requested', 'Error', 'Processing') AND RecordType.Name = 'Equator Messaging' ORDER BY CreatedDate DESC LIMIT 25")
 
-			unless eqms.size == 0
+			unless eqms.size == 0				
 				eqms.each do |eqm|
 					@messages.push({
 						:sf_record => eqm,
@@ -43,7 +43,7 @@ class EquatorMessenger < Job
 						:contact_am => eqm.Asset_Manager__c,
 						:contact_sr_co => eqm.Sr_Closing_Officer__c,
 						:contact_co => eqm.Closing_Officer__c,
-						:reo_number => eqm.Loan_Number__c, 
+						:reo_number => eqm.LN_UUID__r.loan_no__c, 
 						:subject => eqm.Subject__c, 
 						:body => eqm.Body__c
 					})
