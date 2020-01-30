@@ -1,0 +1,5 @@
+source 'https://rubygems.org'
+
+gem 'restforce', '3.1.0'
+gem 'watir', '~> 6.0'
+gem 'headless'

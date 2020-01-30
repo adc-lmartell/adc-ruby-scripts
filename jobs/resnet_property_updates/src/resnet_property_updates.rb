@@ -1,8 +1,12 @@
+require 'rubygems'
+require 'bundler/setup'
+Bundler.require(:default)
+
 require "#{ENV['RUNNER_PATH']}/lib/job.rb"
-require 'watir-webdriver'
-require 'watir-webdriver/wait'
+#require 'watir-webdriver'
+#require 'watir-webdriver/wait'
+require 'watir'
 require 'headless'
-#require 'ntlm/smtp'
 require 'date'
 
 class ResnetPropertyUpdates < Job
