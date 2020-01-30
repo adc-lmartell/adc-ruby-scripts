@@ -2,3 +2,4 @@
 */.DS_Store
 jobs/*/logs/*
 data/exports/*
+jobs/*/Gemfile.lock
