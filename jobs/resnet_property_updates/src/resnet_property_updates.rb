@@ -3,11 +3,13 @@ require 'bundler/setup'
 Bundler.require(:default)
 
 require "#{ENV['RUNNER_PATH']}/lib/job.rb"
-#require 'watir-webdriver'
-#require 'watir-webdriver/wait'
-require 'watir'
-require 'headless'
 require 'date'
+
+# require 'watir-webdriver'
+# require 'watir-webdriver/wait'
+# require 'watir'
+# require 'webdrivers'
+# require 'headless'
 
 class ResnetPropertyUpdates < Job
 
