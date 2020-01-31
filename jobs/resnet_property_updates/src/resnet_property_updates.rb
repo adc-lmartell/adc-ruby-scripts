@@ -20,6 +20,7 @@ class ResnetPropertyUpdates < Job
 
 	def execute!
 		# Login to SFDC for the records that need processed
+		@logger.info "Logging into Salesforce"
 
 		begin
 			restforce_client = get_restforce_client(@options['salesforce']['external']['production'], true)
