@@ -30,49 +30,49 @@ class ResnetPropertyUpdates < Job
 
 
 			# Pull the new requests and any old error records for processing
-			props = client.query("SELECT Id, LN_UUID__r.loan_no__c, Outsourcer__c, Auction_Start_Date__c, Auction_End_Date__c, Finance__c, Highest_Bid__c, Link__c, Reserve__c, Runs__c, Web_Hits__c FROM External_Update__c WHERE Status__c IN ('Requested', 'Processing','Error') AND Target__c = \'ResNet\' ORDER BY CreatedDate DESC LIMIT 50")
+			props = client.query("SELECT Id, LN_UUID__r.loan_no__c, Outsourcer__c, Auction_Start_Date__c, Auction_End_Date__c, Finance__c, Highest_Bid__c, Link__c, Reserve__c, Runs__c, Web_Hits__c FROM External_Update__c WHERE Status__c IN ('Requested', 'Processing','Error') AND Target__c = 'ResNet' ORDER BY CreatedDate DESC LIMIT 50")
 
 			unless props.size == 0
 				props.each do |prop|
-					outsourcer = ""
+					unless prop.prop.LN_UUID__r.nil?
+						outsourcer = nil
 
-					if !prop.Outsourcer__c.nil?	
+						unless prop.Outsourcer__c.nil?	
+							if prop.Outsourcer__c == "LRES" then
+								outsourcer = "les_res"
+							elsif prop.Outsourcer__c == "Champion" then
+								outsourcer = "champion"
+							elsif prop.Outsourcer__c == "Carrington Property Services, LLC" then
+								outsourcer = "carrington"
+							elsif prop.Outsourcer__c == "Single Source Property Solutions" then
+								outsourcer = "single_source"
+							end
 
-						if prop.Outsourcer__c == "LRES" then
-							outsourcer = "les_res"
-						elsif prop.Outsourcer__c == "Champion" then
-							outsourcer = "champion"
-						elsif prop.Outsourcer__c == "Carrington Property Services, LLC" then
-							outsourcer = "carrington"
-						elsif prop.Outsourcer__c == "Single Source Property Solutions" then
-							outsourcer = "single_source"
+							if !@properties.has_key?(outsourcer) then
+								@properties[outsourcer] = []
+							end
+
+							puts "loan number is #{prop.LN_UUID__r.loan_no__c}"
+							@properties[outsourcer].push({
+								:sf_record => prop,
+								:loan_num => prop.LN_UUID__r.loan_no__c,
+								:outsourcer => prop.Outsourcer__c,
+								:start_date => format_date(prop.Auction_Start_Date__c),
+								:end_date => format_date(prop.Auction_End_Date__c), 
+								:finance => (prop.Finance__c.downcase == "yes" || prop.Finance__c.downcase == "no") ? prop.Finance__c : "",
+								:high_bid => prop.Highest_Bid__c,
+								:link => prop.Link__c,
+								:reserve => prop.Reserve__c,
+								:run => prop.Runs__c,
+								:web_hits => format_int(prop.Web_Hits__c)
+							})
+							save_sf_record(prop, "Processing", nil, nil)
+						else
+							save_sf_record(prop, "Error", nil, "Outsourcer not provided.")
 						end
-
-						if !@properties.has_key?(outsourcer) then
-							@properties[outsourcer] = []
-						end
-
-						puts "loan number is #{prop.LN_UUID__r.loan_no__c}"
-						@properties[outsourcer].push({
-							:sf_record => prop,
-							:loan_num => prop.LN_UUID__r.loan_no__c,
-							:outsourcer => prop.Outsourcer__c,
-							:start_date => format_date(prop.Auction_Start_Date__c),
-							:end_date => format_date(prop.Auction_End_Date__c), 
-							:finance => (prop.Finance__c.downcase == "yes" || prop.Finance__c.downcase == "no") ? prop.Finance__c : "",
-							:high_bid => prop.Highest_Bid__c,
-							:link => prop.Link__c,
-							:reserve => prop.Reserve__c,
-							:run => prop.Runs__c,
-							:web_hits => format_int(prop.Web_Hits__c)
-						})
-						save_sf_record(prop, "Processing", nil, nil)
-					else
-						save_sf_record(prop, "Error", nil, "Outsourcer not provided.")
 					end
 				end
-
-				update_assets_in_resnet()
+				update_assets_in_resnet() unless @properties.empty?
 			end
 
 		rescue Exception => e
