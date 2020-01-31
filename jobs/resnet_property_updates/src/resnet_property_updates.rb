@@ -15,7 +15,6 @@ class ResnetPropertyUpdates < Job
 
 	def initialize(options, logger)
 		super(options, logger)
-
 		@properties = {}
 	end
 
@@ -23,11 +22,8 @@ class ResnetPropertyUpdates < Job
 		# Login to SFDC for the records that need processed
 
 		begin
-			puts @options['salesforce']['external']
-
 			restforce_client = get_restforce_client(@options['salesforce']['external']['production'], true)
 			client = restforce_client[:client]
-
 
 			# Pull the new requests and any old error records for processing
 			props = client.query("SELECT Id, LN_UUID__r.loan_no__c, Outsourcer__c, Auction_Start_Date__c, Auction_End_Date__c, Finance__c, Highest_Bid__c, Link__c, Reserve__c, Runs__c, Web_Hits__c FROM External_Update__c WHERE Status__c IN ('Requested', 'Processing','Error') AND Target__c = 'ResNet' ORDER BY CreatedDate DESC LIMIT 50")
@@ -93,15 +89,10 @@ class ResnetPropertyUpdates < Job
 
 		@properties.each do |outsourcer, properties|
 
-			puts properties.inspect
-
 			puts outsourcer
 
 			login = @options['resnet'][outsourcer]['username']
 			pwd = @options['resnet'][outsourcer]['password']
-			
-			puts login
-			puts pwd
 
 			b = Watir::Browser.new
 
