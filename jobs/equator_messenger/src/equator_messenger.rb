@@ -19,11 +19,12 @@ class EquatorMessenger < Job
 		@messages = []
 		@login_credentials = {
 			"Bank of America" => {
-				:url => "https://vendors.equator.com",
-				:username => "bac_auction@auction.com",
-				:password => "Auction2014"
+				:url => @options['equator']['bac']['url'],
+				:username => @options['equator']['bac']['username'],
+				:password => @options['equator']['bac']['password']
 			}
 		}
+		puts @login_credentials
 	end
 
 	def execute!
