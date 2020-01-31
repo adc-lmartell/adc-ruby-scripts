@@ -24,7 +24,6 @@ class EquatorMessenger < Job
 				:password => @options['equator']['bac']['password']
 			}
 		}
-		puts @login_credentials
 	end
 
 	def execute!
