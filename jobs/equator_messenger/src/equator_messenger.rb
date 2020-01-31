@@ -1,8 +1,13 @@
+require 'rubygems'
+require 'bundler/setup'
+Bundler.require(:default)
+
 require "#{ENV['RUNNER_PATH']}/lib/job.rb"
-#require 'watir'
-require 'watir-webdriver'
-require 'watir-webdriver/wait'
-require 'headless'
+
+# require 'watir'
+# require 'watir-webdriver'
+# require 'watir-webdriver/wait'
+# require 'headless'
 
 class NoClientLoginException < Exception 
 end
