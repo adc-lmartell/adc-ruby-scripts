@@ -36,11 +36,11 @@ class EquatorMessenger < Job
 			client = restforce_client[:client]
 
 			# Pull the new requests and any old error records for processing
-			eqms = client.query("SELECT Id, Client__c, LN_UUID__r.loan_no__c, Subject__c, Body__c, Agent__c, Asset_Manager__c, Sr_Asset_Manager__c, Closing_Officer__c, Sr_Closing_Officer__c, Status__c, Complete_Date__c, Error_Message__c FROM External_Update__c WHERE Status__c IN ('Requested', 'Error', 'Processing') AND RecordType.Name = 'Equator Messaging' ORDER BY CreatedDate DESC LIMIT 25")
+			eqms = client.query("SELECT Id, Client__c, LN_UUID__r.loan_no__c, Subject__c, Body__c, Agent__c, Asset_Manager__c, Sr_Asset_Manager__c, Closing_Officer__c, Sr_Closing_Officer__c, Status__c, Complete_Date__c, Error_Message__c FROM External_Update__c WHERE Status__c IN ('Requested', 'Error', 'Processing') AND RecordType.Name = 'Equator Messaging' AND LN_UUID__c != null ORDER BY CreatedDate DESC LIMIT 25")
 
 			unless eqms.size == 0	
 				eqms.each do |eqm|
-					unless eqm.LN_UUID__r.nil?
+					unless eqm.LN_UUID__r.loan_no__c.nil?
 						@messages.push({
 							:sf_record => eqm,
 							:client => eqm.Client__c,
@@ -72,10 +72,10 @@ class EquatorMessenger < Job
 		logged_in = false
 
 		# ----Uncomment when running on virtual machine----
-		headless = Headless.new
-		headless.start
+		# headless = Headless.new
+		# headless.start
 
-		b = Watir::Browser.new
+		b = Watir::Browser.new :chrome
 		# b.driver.manage.timeouts.implicit_wait = 10 #10 seconds
 
 		@messages.each do |message|
@@ -87,61 +87,71 @@ class EquatorMessenger < Job
 				if logged_in == false
 					credentials = @login_credentials[message[:client]]
 
+					# Goto EQ login page
 					b.goto credentials[:url]
 
-					b.text_field(:name, 'enter_username').set credentials[:username]
-					b.text_field(:name, 'enter_password').set credentials[:password]
-					b.button(:name, 'btnLogin').click
+					# Populate login form
+					b.text_field({ name: 'enter_username' }).set credentials[:username]
+					b.text_field({ name: 'enter_password' }).set credentials[:password]
+
+					# Click login button
+					b.button({ name: 'btnLogin' }).click
 
 					logged_in = true
 				end
 
-				# b.goto "https://vendors.equator.com/index.cfm?event=property.search&clearCookie=true"
-				b.a(:text,'Properties').click
-				b.a(:text,'Search Properties').wait_until_present
-				b.a(:text,'Search Properties').click
+				# Navigate to search page
+				b.goto "https://vendors.equator.com/index.cfm?event=property.search&clearCookie=true"
+				
+				# Deprecated UX flow
+				# b.a({ text: 'Properties' }).click
+				# b.a({ text: 'Search Properties' }).wait_until(&:present?)
+				# b.a({ text: 'Search Properties' }).click
 
-				b.select_list(:name, 'property_SearchType').select "REO Number"
-				b.text_field(:name, 'property_SearchText').set message[:reo_number]
-				b.button(:name, 'btnSearch').click
+				# Update search filters and click Search
+				b.select_list({ name: 'property_SearchType' }).select "REO Number"
+				b.text_field({ name: 'property_SearchText' }).set message[:reo_number]
+				b.button({ name: 'btnSearch' }).click
 
-				b.links(:href, /property\.viewEvents/).last.wait_until_present				
-				uri = b.links(:href, /property\.viewEvents/).last.href
+				# Find property detail page from results 
+				b.links({ href: /event=property.viewEvents/ }).last.wait_until(&:present?)
+				uri = b.links({ href: /event=property.viewEvents/ }).last.href
 
+				# Goto the property detail page
 				b.goto "#{uri}"
 
-				b.table(:id, 'propertyHeader').wait_until_present
-				b.links(:text, 'Add Message').last.wait_until_present
-				b.links(:text, 'Add Message').last.click
+				# Click on Add Message link
+				b.table({ id: 'propertyHeader' }).wait_until(&:present?)
+				b.links({ text: 'Add Message' }).last.wait_until(&:present?)
+				b.links({ text: 'Add Message' }).last.click
 
-				b.select_list(:id, 'flag_note_alerts').wait_until_present
-
+				b.select_list({ id: 'flag_note_alerts' }).wait_until(&:present?)
 
 				if message[:contact_agent] then
-					b.select_list(:id, 'flag_note_alerts').select(Regexp.new("^AGENT"))
+					b.select_list({ id: 'flag_note_alerts' }).select(Regexp.new("^AGENT"))
 				end
 
 				if message[:contact_am] then
-					b.select_list(:id, 'flag_note_alerts').select(Regexp.new("^ASSET MANAGER"))
+					b.select_list({ id: 'flag_note_alerts' }).select(Regexp.new("^ASSET MANAGER"))
 				end
 
 				if message[:contact_sr_am] then
-					b.select_list(:id, 'flag_note_alerts').select(Regexp.new("^SR ASSET MANAGER"))
+					b.select_list({ id: 'flag_note_alerts' }).select(Regexp.new("^SR ASSET MANAGER"))
 				end
 
 				if message[:contact_co] then
-					b.select_list(:id, 'flag_note_alerts').select(Regexp.new("^CLOSING OFFICER"))
+					b.select_list({ id: 'flag_note_alerts' }).select(Regexp.new("^CLOSING OFFICER"))
 				end
 
 				if message[:contact_sr_co] then
-					b.select_list(:id, 'flag_note_alerts').select(Regexp.new("^SR CLOSING OFFICER"))
+					b.select_list({ id: 'flag_note_alerts' }).select(Regexp.new("^SR CLOSING OFFICER"))
 				end
 
-				b.text_field(:name, 'title').set message[:subject]
-				b.textarea(:name, 'note').set message[:body]
+				b.text_field({ name: 'title' }).set message[:subject]
+				b.textarea({ name: 'note' }).set message[:body]
 
-				b.button(:name => 'noteSubmit').click
-				b.button(:name => 'noteSubmit').wait_while_present
+				b.button({ name: 'noteSubmit' }).click
+				b.button({ name: 'noteSubmit' }).wait_while(&:present?)
 
 				save_sf_record(message[:sf_record], "Complete", "#{Date.today.to_s}", nil)
 			rescue Exception => e
