@@ -27,7 +27,7 @@ class ResnetPropertyUpdates < Job
 			client = restforce_client[:client]
 
 			# Pull the new requests and any old error records for processing
-			props = client.query("SELECT Id, LN_UUID__r.loan_no__c, Outsourcer__c, Auction_Start_Date__c, Auction_End_Date__c, Finance__c, Highest_Bid__c, Link__c, Reserve__c, Runs__c, Web_Hits__c FROM External_Update__c WHERE Status__c IN ('Requested', 'Processing','Error') AND Target__c = 'ResNet' ORDER BY CreatedDate DESC LIMIT 50")
+			props = client.query("SELECT Id, LN_UUID__r.loan_no__c, Outsourcer__c, Auction_Start_Date__c, Auction_End_Date__c, Finance__c, Highest_Bid__c, Link__c, Reserve__c, Runs__c, Web_Hits__c FROM External_Update__c WHERE Status__c IN ('Requested', 'Processing','Error') AND Target__c = 'ResNet' AND LN_UUID__c != null ORDER BY CreatedDate DESC LIMIT 50")
 
 			unless props.size == 0
 				props.each do |prop|
@@ -89,7 +89,6 @@ class ResnetPropertyUpdates < Job
 		headless.start
 
 		@properties.each do |outsourcer, properties|
-
 			puts outsourcer
 
 			login = @options['resnet'][outsourcer]['username']
@@ -103,14 +102,14 @@ class ResnetPropertyUpdates < Job
 			b.goto @options['resnet'][outsourcer]['url']
 
 			#log into resnet
-			if b.button(:value, 'Login').exists?
-				b.text_field(:name, 'amLoginId').set login
-				b.text_field(:name, 'amIdentity').set pwd
-				b.button(:value, 'Login').click
+			if b.button({ value: 'Login' }).exists?
+				b.text_field({ name: 'amLoginId' }).set login
+				b.text_field({ name: 'amIdentity' }).set pwd
+				b.button({ value: 'Login' }).click
 			end
 
 			begin
-				b.link(:text, 'Properties').wait_until_present
+				b.link({ text: 'Properties' }).wait_until(&:present?)
 			rescue Exception => e
 				@logger.info e
 				
@@ -128,39 +127,39 @@ class ResnetPropertyUpdates < Job
 					puts loan
 
 					#select the properties tab
-					b.link(:text, 'Properties').click
+					b.link({ text: 'Properties' }).click
 
 					#wait for the page to render
-					b.text_field(:name,'pfLoan').wait_until_present
+					b.text_field({ name: 'pfLoan' }).wait_until(&:present?)
 
 					#set the loan number and search
-					b.text_field(:name,'pfLoan').set loan
-					b.input(:id,'btnSearchProp').click
+					b.text_field({ name: 'pfLoan' }).set loan
+					b.input({ id: 'btnSearchProp' }).click
 
 					#wait for search to complete
-					b.element(:css => '#resultsHere table tr:nth-child(2) td:first-child a').wait_until_present
+					b.element({ css: '#resultsHere table tr:nth-child(2) td:first-child a' }).wait_until(&:present?)
 
 					#click searched property
-					b.element(:css => '#resultsHere table tr:nth-child(2) td:first-child a').click
+					b.element({ css: '#resultsHere table tr:nth-child(2) td:first-child a' }).click
 
 					#wait for property to load then click listing
-					b.li(:id,'listing').wait_until_present
-					b.li(:id,'listing').click
+					b.li({ id: 'listing' }).wait_until(&:present?)
+					b.li({ id: 'listing' }).click
 
 					#update property details
-					b.li(:id, 'panelCustomFields').wait_until_present
+					b.li({ id: 'panelCustomFields' }).wait_until(&:present?)
 					if !property[:start_date].nil?
-						b.text_field(:id, 'cf_AuctionStartDate').set property[:start_date]
+						b.text_field({ id: 'cf_AuctionStartDate' }).set property[:start_date]
 					end
 
 					if !property[:end_date].nil?
-						b.text_field(:id, 'cf_AuctionEndDate').set property[:end_date]
+						b.text_field({ id: 'cf_AuctionEndDate' }).set property[:end_date]
 					end
 
 					if !property[:finance].nil?
 						finance = property[:finance]
 						id = (outsourcer == 'carrington') ? 'cf_AuctionFinance' : 'cf_REDCFinance'
-						b.select_list(:id, id).select(Regexp.new("^#{finance}"))
+						b.select_list({ id: id }).select(Regexp.new("^#{finance}"))
 					end
 
 					if !property[:run].nil?
@@ -172,27 +171,27 @@ class ResnetPropertyUpdates < Job
 								run_num = "10"
 							end
 
-							b.select_list(:id, 'cf_AuctionRun').select(Regexp.new("^#{run_num}"))
+							b.select_list({ id: 'cf_AuctionRun' }).select(Regexp.new("^#{run_num}"))
 						end
 					end
 					
 					if !property[:web_hits].nil?
-						b.text_field(:id, 'cf_WebHits').set property[:web_hits]
+						b.text_field({ id: 'cf_WebHits' }).set property[:web_hits]
 					end
 
 					if !property[:high_bid].nil?
-						b.text_field(:id, 'cf_HighestBid').set property[:high_bid]
+						b.text_field({ id: 'cf_HighestBid' }).set property[:high_bid]
 					end
 
 					if !property[:reserve].nil?
-						b.text_field(:id, 'cf_ReserveAmount').set property[:reserve]
+						b.text_field({ id: 'cf_ReserveAmount' }).set property[:reserve]
 					end
 					
 					if !property[:link].nil?
-						b.textarea(:id, 'cf_LinkToPropertyonAuctioncom').set property[:link]
+						b.textarea({ id: 'cf_LinkToPropertyonAuctioncom' }).set property[:link]
 					end
 
-					b.button(:id, "btnUpdateCustomFields").click
+					b.button({ id: "btnUpdateCustomFields" }).click
 					save_sf_record(property[:sf_record], "Complete", "#{Date.today.to_s}", nil)
 
 				rescue Exception => e
