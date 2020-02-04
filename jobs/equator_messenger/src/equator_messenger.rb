@@ -72,8 +72,8 @@ class EquatorMessenger < Job
 		logged_in = false
 
 		# ----Uncomment when running on virtual machine----
-		# headless = Headless.new
-		# headless.start
+		headless = Headless.new
+		headless.start
 
 		b = Watir::Browser.new :chrome
 		# b.driver.manage.timeouts.implicit_wait = 10 #10 seconds
