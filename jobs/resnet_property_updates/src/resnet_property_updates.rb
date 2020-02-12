@@ -27,11 +27,11 @@ class ResnetPropertyUpdates < Job
 			client = restforce_client[:client]
 
 			# Pull the new requests and any old error records for processing
-			props = client.query("SELECT Id, LN_UUID__r.loan_no__c, Outsourcer__c, Auction_Start_Date__c, Auction_End_Date__c, Finance__c, Highest_Bid__c, Link__c, Reserve__c, Runs__c, Web_Hits__c FROM External_Update__c WHERE Status__c IN ('Requested', 'Processing','Error') AND Target__c = 'ResNet' AND LN_UUID__c != null ORDER BY CreatedDate DESC LIMIT 50")
+			props = client.query("SELECT Id, Loan_Number__c, Outsourcer__c, Auction_Start_Date__c, Auction_End_Date__c, Finance__c, Highest_Bid__c, Link__c, Reserve__c, Runs__c, Web_Hits__c FROM External_Update__c WHERE Status__c IN ('Requested', 'Processing','Error') AND Target__c = 'ResNet' AND Loan_Number__c != null ORDER BY CreatedDate DESC LIMIT 50")
 
 			unless props.size == 0
 				props.each do |prop|
-					unless prop.prop.LN_UUID__r.nil?
+					unless prop.Loan_Number__c.nil?
 						outsourcer = nil
 
 						unless prop.Outsourcer__c.nil?	
@@ -49,10 +49,10 @@ class ResnetPropertyUpdates < Job
 								@properties[outsourcer] = []
 							end
 
-							puts "loan number is #{prop.LN_UUID__r.loan_no__c}"
+							puts "loan number is #{prop.Loan_Number__c}"
 							@properties[outsourcer].push({
 								:sf_record => prop,
-								:loan_num => prop.LN_UUID__r.loan_no__c,
+								:loan_num => prop.Loan_Number__c,
 								:outsourcer => prop.Outsourcer__c,
 								:start_date => format_date(prop.Auction_Start_Date__c),
 								:end_date => format_date(prop.Auction_End_Date__c), 
