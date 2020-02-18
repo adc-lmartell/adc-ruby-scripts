@@ -56,6 +56,12 @@ smtp:
   cc_list: <%= ENV['ADC_SMTP_CC'] %>
 
 sftp:
+  trinity:
+    host: <%= ENV['TRIN_SFTP_HOST'] %>
+    port: <%= ENV['TRIN_SFTP_PORT'] %>
+    username: <%= ENV['TRIN_SFTP_USER'] %>
+    password: <%= ENV['TRIN_SFTP_PWD'] %>
+
   closing:
     host: <%= ENV['CLS_SFTP_HOST'] %>
     port: <%= ENV['CLS_SFTP_PORT'] %>
