@@ -16,6 +16,7 @@ class ResnetPropertyUpdates < Job
 	def initialize(options, logger)
 		super(options, logger)
 		@properties = {}
+		@config_hash = {}
 	end
 
 	def execute!
@@ -25,6 +26,11 @@ class ResnetPropertyUpdates < Job
 		begin
 			restforce_client = get_restforce_client(@options['salesforce']['external']['production'], true)
 			client = restforce_client[:client]
+
+			config = client.query("SELECT DeveloperName, username__c, password__c FROM ResNet_Config__mdt")
+			config.each do |entry|
+				@config_hash[entry.DeveloperName] = entry
+			end
 
 			# Pull the new requests and any old error records for processing
 			props = client.query("SELECT Id, Loan_Number__c, Outsourcer__c, Auction_Start_Date__c, Auction_End_Date__c, Finance__c, Highest_Bid__c, Link__c, Reserve__c, Runs__c, Web_Hits__c FROM External_Update__c WHERE Status__c IN ('Requested', 'Processing','Error') AND Target__c = 'ResNet' AND Loan_Number__c != null ORDER BY CreatedDate DESC LIMIT 50")
@@ -36,7 +42,7 @@ class ResnetPropertyUpdates < Job
 
 						unless prop.Outsourcer__c.nil?	
 							if prop.Outsourcer__c == "LRES" then
-								outsourcer = "les_res"
+								outsourcer = "lres"
 							elsif prop.Outsourcer__c == "Champion" then
 								outsourcer = "champion"
 							elsif prop.Outsourcer__c == "Carrington Property Services, LLC" then
@@ -49,7 +55,6 @@ class ResnetPropertyUpdates < Job
 								@properties[outsourcer] = []
 							end
 
-							puts "loan number is #{prop.Loan_Number__c}"
 							@properties[outsourcer].push({
 								:sf_record => prop,
 								:loan_num => prop.Loan_Number__c,
@@ -91,8 +96,10 @@ class ResnetPropertyUpdates < Job
 		@properties.each do |outsourcer, properties|
 			puts outsourcer
 
-			login = @options['resnet'][outsourcer]['username']
-			pwd = @options['resnet'][outsourcer]['password']
+			# login = @options['resnet'][outsourcer]['username']
+			login = @config_hash[outsourcer].username__c
+			# pwd = @options['resnet'][outsourcer]['password']
+			pwd = @config_hash[outsourcer].password__c
 
 			b = Watir::Browser.new
 
